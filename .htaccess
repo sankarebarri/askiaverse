@@ -9,9 +9,11 @@
     # Rule 2: Handle all other requests
     # This checks if the requested file or directory does NOT exist in the root
     # and if the request isn't already for the public folder (to avoid loops).
+    # Also exclude asset requests to prevent rewriting issues
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} !^/public/
+    RewriteCond %{REQUEST_URI} !^/assets/
 
     # If all conditions are met, rewrite the request to the public folder.
     # For example, askiagames.com/login becomes askiagames.com/public/login
