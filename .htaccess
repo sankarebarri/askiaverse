@@ -1,0 +1,20 @@
+<IfModule mod_rewrite.c>
+    # Turn on the rewrite engine
+    RewriteEngine On
+
+    # Rule 1: Handle requests for the root domain (e.g., askiagames.com/)
+    # This rewrites the empty request to the public folder's index.php
+    RewriteRule ^$ public/ [L]
+
+    # Rule 2: Handle all other requests
+    # This checks if the requested file or directory does NOT exist in the root
+    # and if the request isn't already for the public folder (to avoid loops).
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} !^/public/
+
+    # If all conditions are met, rewrite the request to the public folder.
+    # For example, askiagames.com/login becomes askiagames.com/public/login
+    # The user will never see the "/public/" part in their browser URL.
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
