@@ -19,10 +19,14 @@
 
 # Assets Compilés (générés par le build)
 # ===================================================================
-# MODIFIÉ : Nous ne devons PAS ignorer ce dossier pour que nos styles
-# soient déployés sur Hostinger. Si vous aviez un build CI/CD sur le serveur,
-# vous décommenteriez cette ligne.
+# IMPORTANT : Pour Hostinger (sans accès CLI), nous DOIVONS inclure les assets compilés
+# dans le repository pour que les styles soient disponibles sur le serveur.
+# Si vous aviez un build CI/CD sur le serveur, vous ignoreriez ce dossier.
 # /public/assets/
+
+# Fichiers de cache Vite (à ignorer)
+.vite/
+*.local
 
 # Fichiers de log, cache, et système
 # ===================================================================
@@ -52,4 +56,29 @@ Thumbs.db
 # ===================================================================
 /coverage/
 .phpunit.result.cache
+
+# Fichiers spécifiques au développement local
+# ===================================================================
+# Fichiers de développement temporaires
+*.dev.php
+*.test.php
+public/config-test.php
+public/dbtest.php
+
+# Fichiers de backup et archives
+*.bak
+*.backup
+*.old
+*.orig
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Fichiers de logs et cache supplémentaires
+logs/
+.cache/
+.parcel-cache/
+.npm
+.eslintcache
 
