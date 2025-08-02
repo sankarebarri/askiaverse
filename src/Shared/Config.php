@@ -1,6 +1,6 @@
 <?php
 
-namespace Shared;
+namespace App\Shared;
 
 /**
  * Configuration helper class

@@ -1,6 +1,5 @@
 <?php
-namespace Models;
-
+namespace App\Models;
 use Shared\Database;
 
 class User {

@@ -5,7 +5,7 @@
 // C'est un contrôleur de base que nos autres contrôleurs étendront.
 // Il fournit des fonctions utiles et réutilisables.
 // ===================================================================
-
+namespace App\Shared;
 class BaseController
 {
     /**

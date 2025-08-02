@@ -1,34 +1,22 @@
 <?php
 // public/index.php - Front Controller
 
-// Get the requested page from URL
-$page = $_GET['page'] ?? 'index';
+// Notre point d'entrée principal. Il initialise l'application et
+// utilise le routeur pour gérer la requête.
+// ===================================================================
 
-// Define allowed pages and their corresponding view files
-$allowed_pages = [
-    'index' => 'resources/views/index.php',
-    'login' => 'resources/views/auth/login.php',
-    'register' => 'resources/views/auth/register.php',
-    'dashboard' => 'resources/views/dashboard.php',
-    'quiz' => 'resources/views/quiz.php',
-    'competition' => 'resources/views/competition.php',
-    'community' => 'resources/views/community.php',
-    'components' => 'resources/views/components.php'
-];
+// On inclut notre fichier de démarrage qui prépare tout.
+// Notez que le chemin a changé pour correspondre à votre nouvelle structure.
+require_once __DIR__ . '/../src/bootstrap.php';
 
-// Check if the requested page exists
-if (!isset($allowed_pages[$page])) {
-    $page = 'index'; // Default to index if page not found
-}
+// On inclut et récupère notre routeur configuré.
+$router = require_once __DIR__ . '/../config/routes.php';
 
-// Set the current page for navigation highlighting
-$current_page = $page;
+// On récupère l'URI de la requête (ex: /login) et la méthode (GET, POST).
+$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$requestMethod = $_SERVER['REQUEST_METHOD'];
 
-// Determine the view file to include
-$view_file = null;
-if (isset($allowed_pages[$current_page])) {
-    $view_file = realpath(__DIR__ . '/../' . $allowed_pages[$current_page]);
-}
+// Le routeur se charge de trouver la bonne action à exécuter.
+// On lui passe la connexion PDO qui a été créée dans bootstrap.php.
+$router->dispatch($uri, $requestMethod, $pdo);
 
-// Include the layout which will handle the page content
-require_once __DIR__ . '/../resources/views/layouts/app.php';
