@@ -1,0 +1,84 @@
+{
+  "name": "Askiaverse",
+  "short_name": "Askiaverse",
+  "description": "L'aventure du savoir commence ici. Plongez dans un univers de jeux éducatifs conçus pour les jeunes esprits brillants du Mali.",
+  "start_url": "/?page=index",
+  "display": "standalone",
+  "background_color": "#171F2A",
+  "theme_color": "#4A90E2",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "fr",
+  "dir": "ltr",
+  "categories": ["education", "games", "kids"],
+  "icons": [
+    {
+      "src": "/assets/icon-placeholder.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Commencer un Quiz",
+      "short_name": "Quiz",
+      "description": "Démarrer rapidement un quiz",
+      "url": "/?page=dashboard",
+      "icons": [
+        {
+          "src": "/assets/icon-placeholder.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Compétition",
+      "short_name": "Compétition",
+      "description": "Voir les classements",
+      "url": "/?page=competition",
+      "icons": [
+        {
+          "src": "/assets/icon-placeholder.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Communauté",
+      "short_name": "Communauté",
+      "description": "Rejoindre la communauté",
+      "url": "/?page=community",
+      "icons": [
+        {
+          "src": "/assets/icon-placeholder.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/assets/screenshot-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Dashboard principal d'Askiaverse"
+    },
+    {
+      "src": "/assets/screenshot-narrow.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Interface mobile d'Askiaverse"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  }
+} 

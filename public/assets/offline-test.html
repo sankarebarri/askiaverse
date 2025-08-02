@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Offline - Askiaverse</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #171F2A;
+            color: white;
+        }
+        .test-section {
+            background: rgba(37, 53, 73, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .online { background: rgba(80, 200, 120, 0.2); color: #50C878; }
+        .offline { background: rgba(255, 107, 53, 0.2); color: #FF6B35; }
+        button {
+            background: #4A90E2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #2A4D69; }
+        .log {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            padding: 10px;
+            height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .storage-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .storage-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Mode Offline - Askiaverse</h1>
+    
+    <div class="test-section">
+        <h2>📡 État de la Connexion</h2>
+        <div id="connection-status" class="status online">En ligne</div>
+        <button onclick="toggleConnection()">Simuler Hors Ligne/En Ligne</button>
+        <button onclick="checkServiceWorker()">Vérifier Service Worker</button>
+    </div>
+
+    <div class="test-section">
+        <h2>💾 Stockage Local</h2>
+        <div class="storage-info">
+            <div class="storage-item">
+                <strong>IndexedDB:</strong> <span id="indexeddb-status">Vérification...</span>
+            </div>
+            <div class="storage-item">
+                <strong>Cache API:</strong> <span id="cache-status">Vérification...</span>
+            </div>
+        </div>
+        <button onclick="testStorage()">Tester Stockage</button>
+        <button onclick="clearStorage()">Vider Stockage</button>
+    </div>
+
+    <div class="test-section">
+        <h2>🎯 Test Quiz Offline</h2>
+        <button onclick="simulateQuiz()">Simuler un Quiz</button>
+        <button onclick="viewStoredResults()">Voir Résultats Stockés</button>
+        <div id="quiz-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>📊 Informations de Stockage</h2>
+        <div id="storage-usage"></div>
+        <button onclick="updateStorageInfo()">Actualiser</button>
+    </div>
+
+    <div class="test-section">
+        <h2>📝 Logs</h2>
+        <div id="log" class="log"></div>
+        <button onclick="clearLog()">Vider Logs</button>
+    </div>
+
+    <div class="test-section">
+        <h2>🔗 Navigation</h2>
+        <button onclick="window.location.href='/?page=index'">Retour à Askiaverse</button>
+        <button onclick="window.location.href='/?page=dashboard'">Dashboard</button>
+        <button onclick="window.location.href='/?page=quiz&subject=mathematics&theme=arithmetic&mode=quick-quiz'">Test Quiz</button>
+    </div>
+
+    <script src="/assets/offline-storage.js"></script>
+    <script>
+        // Test page variables (separate from offline-storage.js)
+        let isOnline = navigator.onLine;
+        let testOfflineManager;
+
+        // Log function
+        function log(message) {
+            const logElement = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logElement.innerHTML += `[${timestamp}] ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(message);
+        }
+
+        // Clear log
+        function clearLog() {
+            document.getElementById('log').innerHTML = '';
+        }
+
+        // Update connection status
+        function updateConnectionStatus() {
+            const statusElement = document.getElementById('connection-status');
+            statusElement.textContent = isOnline ? 'En ligne' : 'Hors ligne';
+            statusElement.className = `status ${isOnline ? 'online' : 'offline'}`;
+            log(`Connexion: ${isOnline ? 'En ligne' : 'Hors ligne'}`);
+        }
+
+        // Toggle connection simulation
+        function toggleConnection() {
+            isOnline = !isOnline;
+            navigator.onLine = isOnline;
+            
+            // Trigger online/offline events
+            if (isOnline) {
+                window.dispatchEvent(new Event('online'));
+            } else {
+                window.dispatchEvent(new Event('offline'));
+            }
+            
+            updateConnectionStatus();
+        }
+
+        // Check Service Worker
+        async function checkServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registration = await navigator.serviceWorker.getRegistration();
+                    if (registration) {
+                        log(`Service Worker actif: ${registration.scope}`);
+                        log(`État: ${registration.active ? 'Actif' : 'Inactif'}`);
+                    } else {
+                        log('Aucun Service Worker enregistré');
+                    }
+                } catch (error) {
+                    log(`Erreur Service Worker: ${error.message}`);
+                }
+            } else {
+                log('Service Worker non supporté');
+            }
+        }
+
+        // Test storage
+        async function testStorage() {
+            try {
+                // Test IndexedDB
+                if (OfflineStorage.isSupported()) {
+                    const storage = new OfflineStorage();
+                    await storage.init();
+                    
+                    // Test save
+                    const testData = {
+                        subject: 'test',
+                        theme: 'test',
+                        score: 85,
+                        timestamp: Date.now()
+                    };
+                    
+                    await storage.saveQuizResult(testData);
+                    log('✅ IndexedDB: Test de sauvegarde réussi');
+                    
+                    // Test retrieve
+                    const results = await storage.getQuizResults();
+                    log(`✅ IndexedDB: ${results.length} résultats trouvés`);
+                    
+                    document.getElementById('indexeddb-status').textContent = '✅ Fonctionnel';
+                } else {
+                    log('❌ IndexedDB non supporté');
+                    document.getElementById('indexeddb-status').textContent = '❌ Non supporté';
+                }
+
+                // Test Cache API
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    log(`✅ Cache API: ${cacheNames.length} caches trouvés`);
+                    document.getElementById('cache-status').textContent = '✅ Fonctionnel';
+                } else {
+                    log('❌ Cache API non supporté');
+                    document.getElementById('cache-status').textContent = '❌ Non supporté';
+                }
+            } catch (error) {
+                log(`❌ Erreur test stockage: ${error.message}`);
+            }
+        }
+
+        // Clear storage
+        async function clearStorage() {
+            try {
+                // Clear IndexedDB
+                if (OfflineStorage.isSupported()) {
+                    const storage = new OfflineStorage();
+                    await storage.init();
+                    
+                    // Clear all stores
+                    const stores = ['quizResults', 'userProgress', 'offlineActions', 'quizQuestions'];
+                    for (const storeName of stores) {
+                        const store = storage.db.transaction(storeName, 'readwrite').objectStore(storeName);
+                        await new Promise((resolve, reject) => {
+                            const request = store.clear();
+                            request.onsuccess = () => resolve();
+                            request.onerror = () => reject(request.error);
+                        });
+                    }
+                    log('✅ IndexedDB vidé');
+                }
+
+                // Clear Cache API
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    await Promise.all(cacheNames.map(name => caches.delete(name)));
+                    log('✅ Cache API vidé');
+                }
+
+                updateStorageInfo();
+            } catch (error) {
+                log(`❌ Erreur vidage stockage: ${error.message}`);
+            }
+        }
+
+        // Simulate quiz
+        async function simulateQuiz() {
+            try {
+                if (!testOfflineManager) {
+                    log('❌ OfflineManager non initialisé');
+                    return;
+                }
+
+                const quizResult = {
+                    subject: 'mathematics',
+                    theme: 'arithmetic',
+                    mode: 'quick-quiz',
+                    score: Math.floor(Math.random() * 100),
+                    totalQuestions: 5,
+                    correctAnswers: Math.floor(Math.random() * 5),
+                    timeSpent: Math.floor(Math.random() * 300000),
+                    completedAt: new Date().toISOString()
+                };
+
+                await testOfflineManager.saveQuizResult(quizResult);
+                log(`✅ Quiz simulé sauvegardé: Score ${quizResult.score}%`);
+                
+                updateStorageInfo();
+            } catch (error) {
+                log(`❌ Erreur simulation quiz: ${error.message}`);
+            }
+        }
+
+        // View stored results
+        async function viewStoredResults() {
+            try {
+                if (!testOfflineManager) {
+                    log('❌ OfflineManager non initialisé');
+                    return;
+                }
+
+                const results = await testOfflineManager.storage.getQuizResults();
+                const resultsDiv = document.getElementById('quiz-results');
+                
+                if (results.length === 0) {
+                    resultsDiv.innerHTML = '<p>Aucun résultat stocké</p>';
+                    return;
+                }
+
+                let html = '<h3>Résultats stockés:</h3>';
+                results.forEach((result, index) => {
+                    html += `
+                        <div style="background: rgba(255,255,255,0.1); padding: 10px; margin: 5px 0; border-radius: 4px;">
+                            <strong>Quiz ${index + 1}:</strong> ${result.subject} - ${result.theme}<br>
+                            Score: ${result.score}% | Questions: ${result.correctAnswers}/${result.totalQuestions}<br>
+                            Temps: ${Math.round(result.timeSpent / 1000)}s | ${new Date(result.completedAt).toLocaleString()}
+                        </div>
+                    `;
+                });
+                
+                resultsDiv.innerHTML = html;
+                log(`📊 ${results.length} résultats affichés`);
+            } catch (error) {
+                log(`❌ Erreur affichage résultats: ${error.message}`);
+            }
+        }
+
+        // Update storage info
+        async function updateStorageInfo() {
+            try {
+                if (!testOfflineManager) {
+                    log('❌ OfflineManager non initialisé');
+                    return;
+                }
+
+                const usage = await testOfflineManager.storage.getStorageUsage();
+                const results = await testOfflineManager.storage.getQuizResults();
+                const actions = await testOfflineManager.storage.getOfflineActions();
+
+                const usageDiv = document.getElementById('storage-usage');
+                usageDiv.innerHTML = `
+                    <div class="storage-item">
+                        <strong>Utilisation:</strong> ${usage ? `${Math.round(usage.percentage)}%` : 'Non disponible'}
+                    </div>
+                    <div class="storage-item">
+                        <strong>Résultats Quiz:</strong> ${results.length}
+                    </div>
+                    <div class="storage-item">
+                        <strong>Actions Hors Ligne:</strong> ${actions.length}
+                    </div>
+                    <div class="storage-item">
+                        <strong>État:</strong> ${testOfflineManager.isOnline ? 'En ligne' : 'Hors ligne'}
+                    </div>
+                `;
+
+                log('📊 Informations de stockage actualisées');
+            } catch (error) {
+                log(`❌ Erreur mise à jour stockage: ${error.message}`);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            log('🚀 Page de test initialisée');
+            
+            // Wait for offline manager
+            setTimeout(async () => {
+                testOfflineManager = window.offlineManager;
+                if (testOfflineManager) {
+                    log('✅ OfflineManager initialisé');
+                } else {
+                    log('❌ OfflineManager non trouvé');
+                }
+                
+                updateConnectionStatus();
+                await testStorage();
+                await updateStorageInfo();
+            }, 1000);
+
+            // Listen for online/offline events
+            window.addEventListener('online', () => {
+                isOnline = true;
+                updateConnectionStatus();
+            });
+
+            window.addEventListener('offline', () => {
+                isOnline = false;
+                updateConnectionStatus();
+            });
+        });
+    </script>
+</body>
+</html> 
