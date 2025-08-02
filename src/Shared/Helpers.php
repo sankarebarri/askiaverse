@@ -6,6 +6,12 @@
 // pourrons utiliser n'importe où dans notre application.
 // ===================================================================
 
+// Load configuration
+require_once __DIR__ . '/../../config/config.php';
+
+// Load configuration helper
+require_once __DIR__ . '/Config.php';
+
 /**
  * Lit le manifest.json de Vite pour obtenir le chemin correct d'un asset compilé.
  * Cela gère automatiquement le "cache busting" (noms de fichiers avec hash).
@@ -41,12 +47,8 @@ function vite_asset(string $entry): string
     // Le fichier dans le manifest contient déjà le préfixe 'assets/', donc on l'utilise directement
     // Cela donne /assets/assets/filename.css, ce qui correspond à la structure réelle
     
-    // DYNAMIC PATH DETECTION: Check if we're in a hosting environment where public_html contains the public folder
-    // This works for both local development and Hostinger hosting
-    $isHostingEnvironment = file_exists(__DIR__ . '/../../../public_html');
-    $assetPrefix = $isHostingEnvironment ? '/public/assets/' : '/assets/';
-    
-    return $assetPrefix . $manifest[$entry]['file'];
+    // Use the configured asset prefix from the new config system
+    return \Shared\Config::asset($manifest[$entry]['file']);
 }
 
 /**
@@ -64,10 +66,7 @@ function vite_css_tag(string $entry): string
         // Fallback for production: try to load the CSS file directly
         // This handles cases where the manifest might not be available
         if ($entry === 'resources/css/app.css') {
-            // Use the same dynamic path detection for fallback
-            $isHostingEnvironment = file_exists(__DIR__ . '/../../../public_html');
-            $assetPrefix = $isHostingEnvironment ? '/public/assets/' : '/assets/';
-            $fallbackUrl = $assetPrefix . 'app.css';
+            $fallbackUrl = \Shared\Config::asset('app.css');
             return '<link rel="stylesheet" href="' . htmlspecialchars($fallbackUrl) . '">';
         }
         

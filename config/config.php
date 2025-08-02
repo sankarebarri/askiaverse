@@ -8,20 +8,27 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
 
-// 3. Retourner un tableau de configuration lisible
+// 3. Définir la fonction env() si elle n'existe pas
+if (!function_exists('env')) {
+    function env($key, $default = null) {
+        return $_ENV[$key] ?? $default;
+    }
+}
+
+// 4. Retourner un tableau de configuration lisible
 return [
     // Mode de l'application : 'development' ou 'production'
-    'app_env'   => $_ENV['APP_ENV']   ?? 'production',
+    'app_env'   => env('APP_ENV', 'production'),
 
     // Activation du mode debug (affiche les erreurs détaillées)
-    'app_debug' => filter_var($_ENV['APP_DEBUG'] ?? false, FILTER_VALIDATE_BOOLEAN),
+    'app_debug' => filter_var(env('APP_DEBUG', false), FILTER_VALIDATE_BOOLEAN),
 
     // Paramètres de connexion à la base de données
     'db' => [
-        'host'     => $_ENV['DB_HOST']     ?? '127.0.0.1',  // Hôte MySQL
-        'port'     => $_ENV['DB_PORT']     ?? 3306,         // Port MySQL
-        'database' => $_ENV['DB_DATABASE'] ?? 'askiaverse',// Nom de la base
-        'user'     => $_ENV['DB_USER']     ?? 'root',       // Utilisateur
-        'pass'     => $_ENV['DB_PASSWORD'] ?? '',           // Mot de passe
+        'host'     => env('DB_HOST', '127.0.0.1'),  // Hôte MySQL
+        'port'     => env('DB_PORT', 3306),         // Port MySQL
+        'database' => env('DB_DATABASE', 'askiaverse'),// Nom de la base
+        'user'     => env('DB_USERNAME', 'root'),       // Utilisateur
+        'pass'     => env('DB_PASSWORD', ''),           // Mot de passe
     ],
 ];

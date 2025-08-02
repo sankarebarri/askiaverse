@@ -127,27 +127,55 @@ When students click **Communauté**, they enter their **Guild Hall**, a collabor
 
 ## Installation & Setup
 
-1. **Clone** into XAMPP `htdocs`:
+### Prerequisites
+- PHP 8.0+
+- Node.js 16+
+- MySQL 5.7+
+- Composer
+- npm
 
+### Quick Start
+
+1. **Clone the repository**
    ```bash
    cd C:\xampp\htdocs
    git clone https://github.com/YourUser/askiaverse.git
-   ```
-2. **Install PHP deps**:
-
-   ```bash
    cd askiaverse
-   composer install
    ```
-3. **Install Node & build frontend**:
 
+2. **Set up environment**
    ```bash
-   cd resources
-   npm ci
+   # For local development
+   php scripts/setup-env.php local
+   
+   # For production
+   php scripts/setup-env.php production
+   ```
+
+3. **Install dependencies**
+   ```bash
+   composer install
+   npm install
+   ```
+
+4. **Build assets**
+   ```bash
    npm run build
    ```
-4. **Configure .env** (copy `.env.example`), then start Apache & MySQL.
-5. Visit `http://askiaverse.local/` or `http://localhost/askiaverse/`.
+
+5. **Start development**
+   - Start Apache & MySQL in XAMPP
+   - Visit `http://askiaverse.local/` or `http://localhost/askiaverse/`
+
+### Environment Configuration
+
+The application uses environment files for configuration. See [Environment Management Guide](ENVIRONMENT_MANAGEMENT.md) for detailed instructions.
+
+**Quick setup:**
+- Copy `.env.example` to `.env`
+- Update database credentials and URLs
+- Set `ASSET_PREFIX=/assets/` for local development
+- Set `ASSET_PREFIX=/public/assets/` for Hostinger hosting
 
 ---
 
