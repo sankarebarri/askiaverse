@@ -40,7 +40,13 @@ function vite_asset(string $entry): string
     // On retourne simplement le chemin correct.
     // Le fichier dans le manifest contient déjà le préfixe 'assets/', donc on l'utilise directement
     // Cela donne /assets/assets/filename.css, ce qui correspond à la structure réelle
-    return '/assets/' . $manifest[$entry]['file'];
+    
+    // DYNAMIC PATH DETECTION: Check if we're in a hosting environment where public_html contains the public folder
+    // This works for both local development and Hostinger hosting
+    $isHostingEnvironment = file_exists(__DIR__ . '/../../../public_html');
+    $assetPrefix = $isHostingEnvironment ? '/public/assets/' : '/assets/';
+    
+    return $assetPrefix . $manifest[$entry]['file'];
 }
 
 /**
@@ -55,6 +61,16 @@ function vite_css_tag(string $entry): string
         $url = vite_asset($entry);
         return '<link rel="stylesheet" href="' . htmlspecialchars($url) . '">';
     } catch (Exception $e) {
+        // Fallback for production: try to load the CSS file directly
+        // This handles cases where the manifest might not be available
+        if ($entry === 'resources/css/app.css') {
+            // Use the same dynamic path detection for fallback
+            $isHostingEnvironment = file_exists(__DIR__ . '/../../../public_html');
+            $assetPrefix = $isHostingEnvironment ? '/public/assets/' : '/assets/';
+            $fallbackUrl = $assetPrefix . 'app.css';
+            return '<link rel="stylesheet" href="' . htmlspecialchars($fallbackUrl) . '">';
+        }
+        
         // En mode développement, on veut voir l'erreur immédiatement.
         // On arrête l'exécution et on affiche un message clair.
         die('<div style="font-family: sans-serif; padding: 2rem; background-color: #fff0f0; border: 2px solid #ff0000; color: #333;">' .
