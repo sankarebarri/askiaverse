@@ -17,6 +17,8 @@
 # Dépendances PHP (installées avec `composer install`)
 /vendor/
 
+/askia_game1/
+
 # Assets Compilés (générés par le build)
 # ===================================================================
 # IMPORTANT : Pour Hostinger (sans accès CLI), nous DOIVONS inclure les assets compilés
