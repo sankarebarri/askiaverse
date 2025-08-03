@@ -36,11 +36,15 @@ class DashboardController extends BaseController
         // Fetch user statistics
         $userStats = $this->getUserStats($_SESSION['user_id']);
 
-        $this->render('dashboard', [
+        // Get user stats for the header
+        $headerStats = $this->getHeaderStats($_SESSION['user_id']);
+
+        $this->renderPublicWithLayout('dashboard_content', [
             'page_title' => 'Tableau de Bord - Askiaverse',
+            'current_page' => 'dashboard',
             'user' => $userData,
             'stats' => $userStats
-        ]);
+        ], $headerStats);
     }
 
     /**
@@ -133,6 +137,47 @@ class DashboardController extends BaseController
             'total_questions' => 0, // Not available in current schema
             'accuracy' => $accuracy,
             'recent_activity' => $recentActivity
+        ];
+    }
+
+    /**
+     * Get user statistics for the header
+     * @param int $userId
+     * @return array
+     */
+    private function getHeaderStats(int $userId): array
+    {
+        try {
+            $stmt = $this->pdo->prepare("
+                SELECT 
+                    level,
+                    orbs,
+                    focus_tokens,
+                    experience_points,
+                    (experience_points % 100) as xp_percentage
+                FROM users 
+                WHERE id = ? AND deleted_at IS NULL
+            ");
+            $stmt->execute([$userId]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($user) {
+                return [
+                    'level' => $user['level'] ?? 1,
+                    'orbs' => $user['orbs'] ?? 0,
+                    'focus_tokens' => $user['focus_tokens'] ?? 0,
+                    'xp_percentage' => $user['xp_percentage'] ?? 0
+                ];
+            }
+        } catch (\Exception $e) {
+            // Log error in production
+        }
+
+        return [
+            'level' => 1,
+            'orbs' => 0,
+            'focus_tokens' => 0,
+            'xp_percentage' => 0
         ];
     }
 } 

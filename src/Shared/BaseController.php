@@ -53,6 +53,80 @@ class BaseController
             throw new \Exception("Vue non trouvée: {$view}");
         }
     }
+
+    protected function renderWithLayout(string $view, array $data = [], string $layout = 'admin'): void
+    {
+        // Définit l'en-tête Content-Type pour indiquer une page HTML.
+        header('Content-Type: text/html; charset=utf-8');
+        
+        // Start output buffering
+        ob_start();
+        
+        // Include the view file
+        $viewPath = __DIR__ . '/../../resources/views/' . $view . '.php';
+        if (file_exists($viewPath)) {
+            require $viewPath;
+        } else {
+            throw new \Exception("Vue non trouvée: {$view}");
+        }
+        
+        // Get the content
+        $content = ob_get_clean();
+        
+        // Set layout data
+        $layoutData = array_merge($data, [
+            'content' => $content,
+            'current_page' => $data['current_page'] ?? 'dashboard'
+        ]);
+        
+        // Render the layout
+        $layoutPath = __DIR__ . '/../../resources/views/layouts/' . $layout . '.php';
+        if (file_exists($layoutPath)) {
+            extract($layoutData);
+            require $layoutPath;
+        } else {
+            throw new \Exception("Layout non trouvé: {$layout}");
+        }
+    }
+
+    protected function renderPublicWithLayout(string $view, array $data = [], array $userStats = []): void
+    {
+        // Définit l'en-tête Content-Type pour indiquer une page HTML.
+        header('Content-Type: text/html; charset=utf-8');
+        
+        // Start output buffering
+        ob_start();
+        
+        // Extract variables for the view
+        extract($data);
+        
+        // Include the view file
+        $viewPath = __DIR__ . '/../../resources/views/' . $view . '.php';
+        if (file_exists($viewPath)) {
+            require $viewPath;
+        } else {
+            throw new \Exception("Vue non trouvée: {$view}");
+        }
+        
+        // Get the content
+        $content = ob_get_clean();
+        
+        // Set layout data
+        $layoutData = array_merge($data, [
+            'content' => $content,
+            'user_stats' => $userStats,
+            'current_page' => $data['current_page'] ?? 'dashboard'
+        ]);
+        
+        // Render the public layout
+        $layoutPath = __DIR__ . '/../../resources/views/layouts/public.php';
+        if (file_exists($layoutPath)) {
+            extract($layoutData);
+            require $layoutPath;
+        } else {
+            throw new \Exception("Layout public non trouvé");
+        }
+    }
 }
 
 

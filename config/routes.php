@@ -29,6 +29,16 @@ $router->get('/quiz', 'QuizController', 'showQuiz');
 $router->get('/api/quiz/questions', 'QuizController', 'getQuestions');
 $router->post('/api/quiz/submit', 'QuizController', 'submitResult');
 
+// Admin routes for content management
+$router->get('/admin', 'AdminController', 'dashboard');
+$router->get('/admin/login', 'AdminController', 'login');
+$router->post('/admin/login', 'AdminController', 'processLogin');
+$router->get('/admin/logout', 'AdminController', 'logout');
+$router->get('/admin/questions', 'AdminController', 'questions');
+$router->get('/admin/questions/add', 'AdminController', 'addQuestion');
+$router->post('/api/admin/questions', 'AdminController', 'createQuestion');
+$router->get('/api/admin/quizzes', 'AdminController', 'getQuizzes');
+
 // Route pour le tableau de bord
 $router->get('/dashboard', 'DashboardController', 'index');
 
