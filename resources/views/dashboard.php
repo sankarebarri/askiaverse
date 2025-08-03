@@ -1,15 +1,111 @@
 <?php
 $page_title = 'Tableau de bord - Askiaverse';
+$user = $user ?? [
+    'username' => 'TestUser',
+    'level' => 1,
+    'xp' => 0,
+    'orbs' => 0,
+    'focus_tokens' => 3,
+    'xp_percentage' => 0
+];
+$stats = $stats ?? [
+    'total_quizzes' => 0,
+    'avg_score' => 0,
+    'best_score' => 0,
+    'accuracy' => 0
+];
 ?>
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= $page_title ?></title>
+    <link rel="stylesheet" href="/assets/app.css">
+</head>
+<body>
+    <!-- Header with HUD -->
+    <header class="main-header">
+        <div class="header-content">
+            <a href="/" class="logo">Askiaverse</a>
+            <div class="hud">
+                <div class="hud-item" title="Niveau">NIV <span id="level-stat"><?= htmlspecialchars($user['level']) ?></span></div>
+                <div class="hud-item xp-bar-container" title="Expérience">
+                    <div id="xp-bar" class="xp-bar" style="width: <?= $user['xp_percentage'] ?>%"></div>
+                    <span class="xp-text"><?= $user['xp'] ?> XP</span>
+                </div>
+                <div class="hud-item" title="Askia Orbs">🪙 <span id="orbs-stat"><?= htmlspecialchars($user['orbs']) ?></span></div>
+                <div class="hud-item" title="Jetons Focus">🧘 <span id="focus-tokens-stat"><?= htmlspecialchars($user['focus_tokens']) ?></span></div>
+            </div>
+            <div class="user-menu">
+                <button id="user-menu-btn" class="user-menu-btn">
+                    <div class="avatar-placeholder"></div>
+                    <span id="username-display"><?= htmlspecialchars($user['username']) ?></span>
+                    <span class="arrow-down">▼</span>
+                </button>
+                <div id="user-dropdown" class="user-dropdown hidden">
+                    <a href="#" class="dropdown-item disabled">Profil (bientôt)</a>
+                    <a href="#" class="dropdown-item disabled">Paramètres (bientôt)</a>
+                    <a href="#" id="how-to-play-btn" class="dropdown-item">Comment Jouer</a>
+                    <hr>
+                    <a href="/logout" id="logout-button" class="dropdown-item">Se Déconnecter</a>
+                </div>
+            </div>
+        </div>
+    </header>
 
-<!-- Dashboard Content -->
-<div class="dashboard-container">
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <a href="/dashboard" class="nav-link active">📚 Apprendre</a>
+        <a href="/competition" class="nav-link">🏆 Compétition</a>
+        <a href="/community" class="nav-link">👥 Communauté</a>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container py-8">
+        <!-- Dashboard Content -->
+        <div class="dashboard-container">
     <!-- Class Selection Section -->
     <section class="class-selection">
         <h2 class="section-title">Choisis ta classe</h2>
         <div class="class-buttons">
             <button class="class-btn selected" data-class="6">6ème</button>
             <button class="class-btn" data-class="7">7ème</button>
+        </div>
+    </section>
+
+    <!-- User Statistics Section -->
+    <section class="user-stats-section">
+        <h2 class="section-title">Mes Statistiques</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-content">
+                    <div class="stat-value"><?= $stats['total_quizzes'] ?></div>
+                    <div class="stat-label">Quiz Complétés</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-content">
+                    <div class="stat-value"><?= $stats['avg_score'] ?></div>
+                    <div class="stat-label">Score Moyen</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏆</div>
+                <div class="stat-content">
+                    <div class="stat-value"><?= $stats['best_score'] ?></div>
+                    <div class="stat-label">Meilleur Score</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-content">
+                    <div class="stat-value"><?= $stats['accuracy'] ?>%</div>
+                    <div class="stat-label">Précision</div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -75,6 +171,8 @@ $page_title = 'Tableau de bord - Askiaverse';
             </div>
         </div>
     </section>
+        </div>
+    </main>
 </div>
 
 <!-- How to Play Modal -->
@@ -116,6 +214,29 @@ $page_title = 'Tableau de bord - Askiaverse';
 </div>
 
 <script>
+    // User menu functionality
+    document.getElementById('user-menu-btn').addEventListener('click', function() {
+        this.classList.toggle('open');
+        document.getElementById('user-dropdown').classList.toggle('hidden');
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.user-menu')) {
+            document.getElementById('user-menu-btn').classList.remove('open');
+            document.getElementById('user-dropdown').classList.add('hidden');
+        }
+    });
+
+    // Update HUD stats with real data from PHP
+    function updateHUD() {
+        // Use the real data passed from PHP, don't override it
+        // The PHP values are already set in the HTML
+    }
+
+    // Initialize HUD (no need to override PHP values)
+    // updateHUD(); // Commented out to preserve PHP values
+
     // Class selection
     document.querySelectorAll('.class-btn').forEach(btn => {
         btn.addEventListener('click', function() {
@@ -231,7 +352,7 @@ $page_title = 'Tableau de bord - Askiaverse';
 
     function startQuiz(subject, theme, mode) {
         // Redirect to quiz page with all parameters
-        window.location.href = `?page=quiz&subject=${subject}&theme=${theme}&mode=${mode}`;
+        window.location.href = `/quiz?subject=${subject}&theme=${theme}&mode=${mode}`;
     }
 
     // How to Play Modal
@@ -265,4 +386,6 @@ $page_title = 'Tableau de bord - Askiaverse';
             howToPlayModal.classList.add('hidden');
         }
     });
-</script> 
+</script>
+</body>
+</html> 

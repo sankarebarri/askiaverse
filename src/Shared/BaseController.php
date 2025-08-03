@@ -29,6 +29,30 @@ class BaseController
         // Termine le script pour empêcher toute sortie supplémentaire.
         exit;
     }
+
+    /**
+     * Rend une vue PHP.
+     *
+     * @param string $view Le nom de la vue à rendre.
+     * @param array $data Les données à passer à la vue.
+     * @return void
+     */
+    protected function render(string $view, array $data = []): void
+    {
+        // Définit l'en-tête Content-Type pour indiquer une page HTML.
+        header('Content-Type: text/html; charset=utf-8');
+        
+        // Extrait les variables pour qu'elles soient disponibles dans la vue.
+        extract($data);
+        
+        // Inclut la vue.
+        $viewPath = __DIR__ . '/../../resources/views/' . $view . '.php';
+        if (file_exists($viewPath)) {
+            require $viewPath;
+        } else {
+            throw new \Exception("Vue non trouvée: {$view}");
+        }
+    }
 }
 
 

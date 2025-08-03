@@ -1,7 +1,15 @@
 <?php
 $page_title = 'Inscription - Askiaverse';
 ?>
-
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= $page_title ?></title>
+    <link rel="stylesheet" href="/assets/app.css">
+</head>
+<body>
 <!-- Registration Form -->
 <div class="auth-container">
     <!-- Cosmic Background -->
@@ -117,7 +125,7 @@ $page_title = 'Inscription - Askiaverse';
         <div class="auth-footer">
             <p class="auth-link-text">
                 Déjà un compte? 
-                <a href="?page=login" class="auth-link">Se connecter</a>
+                <a href="/login" class="auth-link">Se connecter</a>
             </p>
         </div>
     </div>
@@ -136,15 +144,54 @@ $page_title = 'Inscription - Askiaverse';
             return;
         }
         
-        if (formData.get('password').length < 8) {
-            alert('Le mot de passe doit contenir au moins 8 caractères');
+        if (formData.get('password').length < 6) {
+            alert('Le mot de passe doit contenir au moins 6 caractères');
             return;
         }
         
-        // Simulate registration (replace with actual backend call)
-        console.log('Registration attempt:', Object.fromEntries(formData));
+        // Show loading state
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Création...';
+        submitBtn.disabled = true;
         
-        // For demo purposes, redirect to dashboard
-        window.location.href = '?page=dashboard';
+        // Prepare registration data
+        const registrationData = {
+            username: formData.get('username'),
+            password: formData.get('password'),
+            class: formData.get('class'),
+            city: formData.get('city'),
+            school: formData.get('school')
+        };
+        
+        // Send registration request to backend
+        fetch('/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(registrationData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message === 'Utilisateur enregistré avec succès.') {
+                // Success - redirect to login page
+                alert('Compte créé avec succès! Vous pouvez maintenant vous connecter.');
+                window.location.href = '/login';
+            } else {
+                // Show error message
+                alert(data.message || 'Erreur lors de la création du compte');
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        })
+        .catch(error => {
+            console.error('Registration error:', error);
+            alert('Erreur lors de la création du compte. Veuillez réessayer.');
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        });
     });
-</script> 
+</script>
+</body>
+</html> 

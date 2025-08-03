@@ -1,7 +1,15 @@
 <?php
 $page_title = 'Connexion - Askiaverse';
 ?>
-
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= $page_title ?></title>
+    <link rel="stylesheet" href="/assets/app.css">
+</head>
+<body>
 <!-- Login Form -->
 <div class="auth-container">
     <!-- Cosmic Background -->
@@ -67,7 +75,7 @@ $page_title = 'Connexion - Askiaverse';
         <div class="auth-footer">
             <p class="auth-link-text">
                 Pas encore de compte? 
-                <a href="?page=register" class="auth-link">Inscrivez-vous</a>
+                <a href="/register" class="auth-link">Inscrivez-vous</a>
             </p>
         </div>
     </div>
@@ -79,11 +87,45 @@ $page_title = 'Connexion - Askiaverse';
         e.preventDefault();
         
         const formData = new FormData(this);
+        const username = formData.get('username');
+        const password = formData.get('password');
         
-        // Simulate login (replace with actual backend call)
-        console.log('Login attempt:', Object.fromEntries(formData));
+        // Show loading state
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Connexion...';
+        submitBtn.disabled = true;
         
-        // For demo purposes, redirect to dashboard
-        window.location.href = '?page=dashboard';
+        // Send login request to backend
+        fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: username,
+                password: password
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message === 'Connexion réussie.') {
+                // Success - redirect to dashboard
+                window.location.href = '/dashboard';
+            } else {
+                // Show error message
+                alert(data.message || 'Erreur de connexion');
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        })
+        .catch(error => {
+            console.error('Login error:', error);
+            alert('Erreur de connexion. Veuillez réessayer.');
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        });
     });
-</script> 
+</script>
+</body>
+</html> 

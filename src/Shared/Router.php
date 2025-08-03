@@ -29,6 +29,11 @@ class Router
             $controllerName = $route['controller'];
             $methodName = $route['method'];
 
+            // Add namespace if not already present
+            if (strpos($controllerName, '\\') === false) {
+                $controllerName = 'App\\Controllers\\' . $controllerName;
+            }
+
             $controller = new $controllerName($pdo);
             $controller->$methodName();
         } else {

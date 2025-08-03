@@ -19,6 +19,28 @@ class AuthController extends BaseController
     }
 
     /**
+     * Affiche la page de connexion.
+     * @return void
+     */
+    public function showLogin(): void
+    {
+        $this->render('auth/login', [
+            'page_title' => 'Se Connecter - Askiaverse'
+        ]);
+    }
+
+    /**
+     * Affiche la page d'inscription.
+     * @return void
+     */
+    public function showRegister(): void
+    {
+        $this->render('auth/register', [
+            'page_title' => 'Créer un Compte - Askiaverse'
+        ]);
+    }
+
+    /**
      * Gère le processus d'inscription de l'utilisateur.
      * @return void
      */
@@ -35,6 +57,9 @@ class AuthController extends BaseController
         
         $username = trim($input['username']);
         $password = $input['password'];
+        $class = $input['class'] ?? '';
+        $city = $input['city'] ?? '';
+        $school = $input['school'] ?? '';
 
         // 3. Vérifie si le nom d'utilisateur existe déjà.
         $stmt = $this->pdo->prepare("SELECT id FROM users WHERE username = ? AND deleted_at IS NULL");
@@ -50,9 +75,20 @@ class AuthController extends BaseController
         // 5. Insère le nouvel utilisateur dans la base de données.
         try {
             $stmt = $this->pdo->prepare(
-                "INSERT INTO users (username, password_hash, country_code) VALUES (?, ?, ?)"
+                "INSERT INTO users (username, password_hash, country_code, grade, city, school, status, level, xp, orbs) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
             );
-            $stmt->execute([$username, $passwordHash, 'ML']); // Default country_code 'ML'
+            $stmt->execute([
+                $username, 
+                $passwordHash, 
+                'ML', // Default country_code 'ML'
+                $class,
+                $city,
+                $school,
+                'active', // Default status
+                1, // Default level
+                0, // Default XP
+                100 // Default orbs
+            ]);
             
             $newUserId = $this->pdo->lastInsertId();
 
@@ -116,5 +152,20 @@ class AuthController extends BaseController
                 'username' => $user['username']
             ]
         ]);
+    }
+
+    /**
+     * Gère la déconnexion de l'utilisateur.
+     * @return void
+     */
+    public function logout(): void
+    {
+        // Détruit la session
+        session_start();
+        session_destroy();
+        
+        // Redirige vers la page d'accueil
+        header('Location: /');
+        exit;
     }
 }

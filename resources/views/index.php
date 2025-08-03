@@ -1,7 +1,15 @@
 <?php
 $page_title = 'Askiaverse - Apprendre en s\'amusant';
 ?>
-
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= $page_title ?></title>
+    <link rel="stylesheet" href="/assets/app.css">
+</head>
+<body>
 <!-- Header for Index Page -->
 <header class="index-header">
     <div class="header-content">
@@ -10,8 +18,8 @@ $page_title = 'Askiaverse - Apprendre en s\'amusant';
             <div class="constellation-graphic"></div>
         </div>
         <div class="auth-buttons">
-            <a href="?page=login" class="btn btn-outline">Se Connecter</a>
-            <a href="?page=register" class="btn btn-primary">Créer un Compte</a>
+            <a href="/login" class="btn btn-outline">Se Connecter</a>
+            <a href="/register" class="btn btn-primary">Créer un Compte</a>
         </div>
     </div>
 </header>
@@ -35,9 +43,11 @@ $page_title = 'Askiaverse - Apprendre en s\'amusant';
         
         <!-- CTA Button -->
         <div class="cta-section">
-            <a href="?page=register" class="btn btn-cta">
+            <a href="/register" class="btn btn-cta">
                 🚀 Essayer un Défi Gratuit!
             </a>
         </div>
     </div>
-</section> 
+</section>
+</body>
+</html> 

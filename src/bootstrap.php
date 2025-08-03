@@ -55,13 +55,6 @@ function getDatabaseConnection(): PDO
     }
 }
 
-// On crée la connexion à la base de données pour que le reste de l'application puisse l'utiliser.
-$pdo = getDatabaseConnection();
-
-// src/bootstrap.php
-
-// ... (tout votre code de bootstrap existant) ...
-
 // On crée la connexion à la base de données en utilisant notre nouvelle classe.
 // La variable $pdo sera maintenant disponible pour le reste de l'application.
 $pdo = App\Shared\Database::getInstance();

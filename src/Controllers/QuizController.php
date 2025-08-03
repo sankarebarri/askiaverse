@@ -1,191 +1,204 @@
 <?php
-namespace Controllers;
+namespace App\Controllers;
 
-use Models\Subject;
-use Models\Quiz;
-use Shared\BaseController;
+use App\Shared\BaseController;
+use PDO;
 
 class QuizController extends BaseController {
-    private $subjectModel;
-    private $quizModel;
+    private PDO $pdo;
 
-    public function __construct() {
-        parent::__construct();
-        $this->subjectModel = new Subject();
-        $this->quizModel = new Quiz();
+    public function __construct(PDO $pdo) {
+        $this->pdo = $pdo;
     }
 
-    public function index() {
-        $this->requireAuth();
+    /**
+     * Affiche la page de quiz avec paramètres
+     */
+    public function showQuiz(): void {
+        $subject = $_GET['subject'] ?? '';
+        $theme = $_GET['theme'] ?? '';
+        $mode = $_GET['mode'] ?? '';
         
-        $subjects = $this->subjectModel->getAll();
-        
-        $this->render('quiz/index', [
-            'subjects' => $subjects
+        $this->render('quiz', [
+            'page_title' => 'Quiz - Askiaverse',
+            'subject' => $subject,
+            'theme' => $theme,
+            'mode' => $mode
         ]);
     }
 
-    public function getThemes() {
-        $this->requireAuth();
+    /**
+     * API endpoint to get quiz questions
+     */
+    public function getQuestions(): void {
+        $subject = $_GET['subject'] ?? '';
+        $theme = $_GET['theme'] ?? '';
         
-        $subjectId = $_GET['subject_id'] ?? null;
-        
-        if (!$subjectId) {
-            $this->jsonResponse(['error' => 'Subject ID required'], 400);
-            return;
-        }
-
         try {
-            $themes = $this->subjectModel->getThemes($subjectId);
-            $this->jsonResponse(['themes' => $themes]);
-        } catch (\Exception $e) {
-            $this->jsonResponse(['error' => $e->getMessage()], 500);
-        }
-    }
-
-    public function getQuestions() {
-        $this->requireAuth();
-        
-        $subjectId = $_GET['subject_id'] ?? null;
-        $themeId = $_GET['theme_id'] ?? null;
-        $limit = $_GET['limit'] ?? 10;
-
-        if (!$subjectId) {
-            $this->jsonResponse(['error' => 'Subject ID required'], 400);
-            return;
-        }
-
-        try {
-            $questions = $this->subjectModel->getRandomQuestions($subjectId, $themeId, $limit);
+            // Find the subject (handle both English and French names)
+            $subjectMappings = [
+                'mathematics' => 'Mathématiques',
+                'french' => 'Français',
+                'history-geo' => 'Histoire-Géo'
+            ];
             
-            // Format questions for frontend
-            $formattedQuestions = array_map(function($question) {
-                return [
-                    'id' => $question['id'],
-                    'question' => $question['question'],
-                    'options' => json_decode($question['options'], true),
-                    'correct' => $question['correct_answer'],
-                    'explanation' => $question['explanation'] ?? ''
-                ];
-            }, $questions);
-
-            $this->jsonResponse(['questions' => $formattedQuestions]);
-        } catch (\Exception $e) {
-            $this->jsonResponse(['error' => $e->getMessage()], 500);
-        }
-    }
-
-    public function submitResult() {
-        $this->requireAuth();
-        
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->jsonResponse(['error' => 'Method not allowed'], 405);
-            return;
-        }
-
-        $input = json_decode(file_get_contents('php://input'), true);
-        
-        $requiredFields = ['subject_id', 'theme_id', 'score', 'total_questions', 'correct_answers', 'time_spent'];
-        
-        foreach ($requiredFields as $field) {
-            if (!isset($input[$field])) {
-                $this->jsonResponse(['error' => "Missing required field: {$field}"], 400);
+            $subjectName = $subjectMappings[$subject] ?? $subject;
+            
+            $stmt = $this->pdo->prepare("SELECT id FROM subjects WHERE name = ? AND deleted_at IS NULL");
+            $stmt->execute([$subjectName]);
+            $subjectData = $stmt->fetch(\PDO::FETCH_ASSOC);
+            
+            if (!$subjectData) {
+                $this->jsonResponse(['error' => 'Subject not found'], 404);
                 return;
             }
-        }
-
-        try {
-            $attemptData = [
-                'user_id' => $_SESSION['user_id'],
-                'subject_id' => $input['subject_id'],
-                'theme_id' => $input['theme_id'],
-                'score' => $input['score'],
-                'total_questions' => $input['total_questions'],
-                'correct_answers' => $input['correct_answers'],
-                'time_spent' => $input['time_spent'],
-                'mode' => $input['mode'] ?? 'quick_quiz'
-            ];
-
-            $attemptId = $this->quizModel->saveAttempt($attemptData);
             
-            $this->jsonResponse([
-                'success' => true,
-                'attempt_id' => $attemptId,
-                'message' => 'Résultat sauvegardé avec succès'
-            ]);
-        } catch (\Exception $e) {
-            $this->jsonResponse(['error' => $e->getMessage()], 500);
-        }
-    }
-
-    public function getUserAttempts() {
-        $this->requireAuth();
-        
-        $limit = $_GET['limit'] ?? 20;
-        
-        try {
-            $attempts = $this->quizModel->getUserAttempts($_SESSION['user_id'], $limit);
-            $this->jsonResponse(['attempts' => $attempts]);
-        } catch (\Exception $e) {
-            $this->jsonResponse(['error' => $e->getMessage()], 500);
-        }
-    }
-
-    public function getUserStats() {
-        $this->requireAuth();
-        
-        try {
-            $stats = $this->quizModel->getUserStats($_SESSION['user_id']);
-            $this->jsonResponse(['stats' => $stats]);
-        } catch (\Exception $e) {
-            $this->jsonResponse(['error' => $e->getMessage()], 500);
-        }
-    }
-
-    public function getLeaderboard() {
-        $this->requireAuth();
-        
-        $limit = $_GET['limit'] ?? 10;
-        $school = $_GET['school'] ?? null;
-        
-        try {
-            if ($school) {
-                $leaderboard = $this->quizModel->getSchoolLeaderboard($school, $limit);
-            } else {
-                $leaderboard = $this->quizModel->getLeaderboard($limit);
+            // Find the topic/theme (handle both English and French names)
+            $themeMappings = [
+                'arithmetic' => 'Calcul',
+                'geometry' => 'Géométrie',
+                'algebra' => 'Algèbre'
+            ];
+            
+            $themeName = $themeMappings[$theme] ?? $theme;
+            
+            $stmt = $this->pdo->prepare("SELECT id FROM topics WHERE subject_id = ? AND name = ? AND deleted_at IS NULL");
+            $stmt->execute([$subjectData['id'], $themeName]);
+            $topicData = $stmt->fetch(\PDO::FETCH_ASSOC);
+            
+            if (!$topicData) {
+                $this->jsonResponse(['error' => 'Topic not found'], 404);
+                return;
             }
             
-            $this->jsonResponse(['leaderboard' => $leaderboard]);
+            // Get quiz
+            $stmt = $this->pdo->prepare("SELECT id FROM quizzes WHERE topic_id = ? AND deleted_at IS NULL LIMIT 1");
+            $stmt->execute([$topicData['id']]);
+            $quizData = $stmt->fetch(\PDO::FETCH_ASSOC);
+            
+            if (!$quizData) {
+                $this->jsonResponse(['error' => 'Quiz not found'], 404);
+                return;
+            }
+            
+            // Get questions with options
+            $stmt = $this->pdo->prepare("
+                SELECT 
+                    q.id as question_id,
+                    q.text as question_text,
+                    q.question_type,
+                    q.jackpot_value,
+                    o.id as option_id,
+                    o.text as option_text,
+                    o.is_correct
+                FROM questions q
+                LEFT JOIN options o ON q.id = o.question_id
+                WHERE q.quiz_id = ? AND q.deleted_at IS NULL
+                ORDER BY q.display_order, o.id
+            ");
+            $stmt->execute([$quizData['id']]);
+            $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            
+            // Format questions
+            $questions = [];
+            $currentQuestion = null;
+            
+            foreach ($results as $row) {
+                if ($currentQuestion === null || $currentQuestion['id'] !== $row['question_id']) {
+                    if ($currentQuestion !== null) {
+                        $questions[] = $currentQuestion;
+                    }
+                    
+                    $currentQuestion = [
+                        'id' => $row['question_id'],
+                        'text' => $row['question_text'],
+                        'type' => $row['question_type'],
+                        'jackpot_value' => $row['jackpot_value'],
+                        'options' => []
+                    ];
+                }
+                
+                if ($row['option_id']) {
+                    $currentQuestion['options'][] = [
+                        'id' => $row['option_id'],
+                        'text' => $row['option_text'],
+                        'is_correct' => (bool)$row['is_correct']
+                    ];
+                }
+            }
+            
+            if ($currentQuestion !== null) {
+                $questions[] = $currentQuestion;
+            }
+            
+            $this->jsonResponse([
+                'questions' => $questions,
+                'total_questions' => count($questions),
+                'quiz_id' => $quizData['id']
+            ]);
+            
         } catch (\Exception $e) {
-            $this->jsonResponse(['error' => $e->getMessage()], 500);
+            $this->jsonResponse(['error' => 'Failed to load questions: ' . $e->getMessage()], 500);
         }
     }
 
-    public function getDailyStats() {
-        $this->requireAuth();
+    /**
+     * API endpoint to submit quiz results
+     */
+    public function submitResult(): void {
+        // Check if user is logged in
+        if (!isset($_SESSION['user_id'])) {
+            $this->jsonResponse(['error' => 'User not authenticated'], 401);
+            return;
+        }
         
-        $days = $_GET['days'] ?? 7;
+        $input = json_decode(file_get_contents('php://input'), true);
+        
+        if (!isset($input['quiz_id']) || !isset($input['score']) || !isset($input['total_questions'])) {
+            $this->jsonResponse(['error' => 'Missing required data'], 400);
+            return;
+        }
         
         try {
-            $stats = $this->quizModel->getDailyStats($_SESSION['user_id'], $days);
-            $this->jsonResponse(['stats' => $stats]);
+            // Insert quiz attempt
+            $stmt = $this->pdo->prepare("
+                INSERT INTO quiz_attempts (user_id, quiz_id, score, total_questions, started_at, completed_at)
+                VALUES (?, ?, ?, ?, NOW(), NOW())
+            ");
+            $stmt->execute([
+                $_SESSION['user_id'],
+                $input['quiz_id'],
+                $input['score'],
+                $input['total_questions']
+            ]);
+            
+            $attemptId = $this->pdo->lastInsertId();
+            
+            // Calculate XP and orbs earned
+            $xpEarned = $input['score'] * 10; // 10 XP per correct answer
+            $orbsEarned = $input['score'] >= ($input['total_questions'] * 0.7) ? 50 : 0; // 50 orbs if 70% or higher
+            
+            // Update user stats
+            if ($xpEarned > 0 || $orbsEarned > 0) {
+                $stmt = $this->pdo->prepare("
+                    UPDATE users 
+                    SET xp = xp + ?, orbs = orbs + ?
+                    WHERE id = ?
+                ");
+                $stmt->execute([$xpEarned, $orbsEarned, $_SESSION['user_id']]);
+            }
+            
+            $this->jsonResponse([
+                'message' => 'Quiz completed successfully',
+                'attempt_id' => $attemptId,
+                'xp_earned' => $xpEarned,
+                'orbs_earned' => $orbsEarned,
+                'new_total_xp' => $xpEarned,
+                'new_total_orbs' => $orbsEarned
+            ]);
+            
         } catch (\Exception $e) {
-            $this->jsonResponse(['error' => $e->getMessage()], 500);
+            $this->jsonResponse(['error' => 'Failed to save results: ' . $e->getMessage()], 500);
         }
-    }
-
-    private function requireAuth() {
-        session_start();
-        if (!isset($_SESSION['user_id'])) {
-            $this->jsonResponse(['error' => 'Authentication required'], 401);
-            exit;
-        }
-    }
-
-    private function jsonResponse($data, $statusCode = 200) {
-        http_response_code($statusCode);
-        header('Content-Type: application/json');
-        echo json_encode($data, JSON_UNESCAPED_UNICODE);
-        exit;
     }
 } 
