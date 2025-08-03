@@ -81,54 +81,41 @@ class QuizController extends BaseController {
                 return;
             }
             
-            // Get questions with options
+            // Get questions with JSON options
             $stmt = $this->pdo->prepare("
                 SELECT 
                     q.id as question_id,
                     q.text as question_text,
                     q.question_type,
                     q.jackpot_value,
-                    o.id as option_id,
-                    o.text as option_text,
-                    o.is_correct
+                    q.options,
+                    q.correct_answer_index
                 FROM questions q
-                LEFT JOIN options o ON q.id = o.question_id
                 WHERE q.quiz_id = ? AND q.deleted_at IS NULL
-                ORDER BY q.display_order, o.id
+                ORDER BY q.display_order
             ");
             $stmt->execute([$quizData['id']]);
             $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             
             // Format questions
             $questions = [];
-            $currentQuestion = null;
             
             foreach ($results as $row) {
-                if ($currentQuestion === null || $currentQuestion['id'] !== $row['question_id']) {
-                    if ($currentQuestion !== null) {
-                        $questions[] = $currentQuestion;
-                    }
-                    
-                    $currentQuestion = [
-                        'id' => $row['question_id'],
-                        'text' => $row['question_text'],
-                        'type' => $row['question_type'],
-                        'jackpot_value' => $row['jackpot_value'],
-                        'options' => []
-                    ];
+                $options = json_decode($row['options'], true);
+                
+                // Add option IDs for compatibility
+                foreach ($options as $index => &$option) {
+                    $option['id'] = $row['question_id'] . '_' . $index;
                 }
                 
-                if ($row['option_id']) {
-                    $currentQuestion['options'][] = [
-                        'id' => $row['option_id'],
-                        'text' => $row['option_text'],
-                        'is_correct' => (bool)$row['is_correct']
-                    ];
-                }
-            }
-            
-            if ($currentQuestion !== null) {
-                $questions[] = $currentQuestion;
+                $questions[] = [
+                    'id' => $row['question_id'],
+                    'text' => $row['question_text'],
+                    'type' => $row['question_type'],
+                    'jackpot_value' => $row['jackpot_value'],
+                    'options' => $options,
+                    'correct_answer_index' => $row['correct_answer_index']
+                ];
             }
             
             $this->jsonResponse([
