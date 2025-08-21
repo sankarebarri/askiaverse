@@ -9,7 +9,9 @@ declare(strict_types=1);
 
 // Démarrage de la session
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+    // Set session directory to a writable location
+ini_set('session.save_path', '/tmp');
+session_start();
 }
 
 // Autoloading via Composer - C'est la seule inclusion de classe dont nous avons besoin !
@@ -30,11 +32,11 @@ require_once __DIR__ . '/Shared/Helpers.php';
 function getDatabaseConnection(): PDO
 {
     try {
-        $host = $_ENV['DB_HOST'];
-        $port = $_ENV['DB_PORT'];
-        $dbname = $_ENV['DB_DATABASE'];
-        $username = $_ENV['DB_USERNAME'];
-        $password = $_ENV['DB_PASSWORD'];
+        $host = $_ENV['DB_HOST'] ?? '127.0.0.1';
+        $port = $_ENV['DB_PORT'] ?? 3306;
+        $dbname = $_ENV['DB_DATABASE'] ?? 'askiaverse';
+        $username = $_ENV['DB_USERNAME'] ?? 'root';
+        $password = $_ENV['DB_PASSWORD'] ?? '';
         
         $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4";
         
@@ -47,7 +49,8 @@ function getDatabaseConnection(): PDO
         return new PDO($dsn, $username, $password, $options);
     } catch (PDOException $e) {
         // En mode de débogage, afficher l'erreur. Sinon, afficher un message générique.
-        if ($_ENV['APP_DEBUG'] === 'true') {
+        $debug = $_ENV['APP_DEBUG'] ?? 'true';
+        if ($debug === 'true') {
             die("Erreur de connexion à la base de données : " . $e->getMessage());
         } else {
             die("Erreur de serveur. Veuillez réessayer plus tard.");
@@ -57,4 +60,8 @@ function getDatabaseConnection(): PDO
 
 // On crée la connexion à la base de données en utilisant notre nouvelle classe.
 // La variable $pdo sera maintenant disponible pour le reste de l'application.
-$pdo = App\Shared\Database::getInstance();
+try {
+    $pdo = getDatabaseConnection();
+} catch (Exception $e) {
+    die("Erreur de connexion : " . $e->getMessage());
+}

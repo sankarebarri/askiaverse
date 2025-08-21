@@ -18,8 +18,8 @@ $page_title = 'Askiaverse - Apprendre en s\'amusant';
             <div class="constellation-graphic"></div>
         </div>
         <div class="auth-buttons">
-            <a href="/login" class="btn btn-outline">Se Connecter</a>
-            <a href="/register" class="btn btn-primary">Créer un Compte</a>
+                            <a href="/login.php" class="btn btn-outline">Se Connecter</a>
+                <a href="/register.php" class="btn btn-primary">Créer un Compte</a>
         </div>
     </div>
 </header>
@@ -41,11 +41,16 @@ $page_title = 'Askiaverse - Apprendre en s\'amusant';
             Plongez dans un univers de jeux éducatifs conçus pour les jeunes esprits brillants du Mali.
         </p>
         
-        <!-- CTA Button -->
+        <!-- CTA Buttons -->
         <div class="cta-section">
-            <a href="/register" class="btn btn-cta">
-                🚀 Essayer un Défi Gratuit!
-            </a>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="/subjects" class="btn btn-outline">
+                    📚 Découvrir les Matières
+                </a>
+                <a href="/register" class="btn btn-cta">
+                    🚀 Essayer un Défi Gratuit!
+                </a>
+            </div>
         </div>
     </div>
 </section>
