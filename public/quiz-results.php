@@ -243,25 +243,7 @@ if ($attemptId) {
 </head>
 <body class="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 min-h-screen">
     <!-- Header -->
-    <header class="bg-white shadow-sm border-b">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center py-4">
-                <div class="flex items-center">
-                    <?php if (isset($_SESSION['user_id'])): ?>
-                        <a href="user-dashboard.php" class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors duration-200">Askiaverse</a>
-                    <?php else: ?>
-                        <a href="index.php" class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors duration-200">Askiaverse</a>
-                    <?php endif; ?>
-                </div>
-                <nav class="flex space-x-4">
-                    <a href="simple-subjects.php" class="text-gray-600 hover:text-gray-900">Matières</a>
-                    <a href="user-dashboard.php" class="text-gray-600 hover:text-gray-900">Tableau de Bord</a>
-                    <span class="text-gray-600">Bonjour, <?= htmlspecialchars($_SESSION['username']) ?>!</span>
-                    <a href="logout.php" class="text-red-600 hover:text-red-700">Déconnexion</a>
-                </nav>
-            </div>
-        </div>
-    </header>
+    <?php include 'components/header.php'; ?>
 
     <!-- Main Content -->
     <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

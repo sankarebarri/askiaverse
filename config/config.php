@@ -27,8 +27,8 @@ return [
     'db' => [
         'host'     => env('DB_HOST', 'localhost'),  // Hôte MySQL
         'port'     => env('DB_PORT', 3306),         // Port MySQL
-        'database' => env('DB_DATABASE', 'u379844049_askiagames_db'),// Nom de la base
-        'user'     => env('DB_USERNAME', 'u379844049_askiagames'),       // Utilisateur
+        'database' => env('DB_DATABASE', 'askiaverse'),// Nom de la base
+        'user'     => env('DB_USERNAME', 'root'),       // Utilisateur
         'pass'     => env('DB_PASSWORD', ''),           // Mot de passe
     ],
 ];

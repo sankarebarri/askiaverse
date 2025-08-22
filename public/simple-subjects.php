@@ -60,31 +60,7 @@ try {
 </head>
 <body class="bg-gray-50">
     <!-- Header -->
-    <header class="bg-white shadow-sm border-b">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center py-4">
-                <div class="flex items-center">
-                    <?php if (isset($_SESSION['user_id'])): ?>
-                        <a href="user-dashboard.php" class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors duration-200">Askiaverse</a>
-                    <?php else: ?>
-                        <a href="index.php" class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors duration-200">Askiaverse</a>
-                    <?php endif; ?>
-                </div>
-                <nav class="flex space-x-4">
-                    <a href="index.php" class="text-gray-600 hover:text-gray-900">Accueil</a>
-                    <a href="simple-subjects.php" class="text-blue-600 font-medium">Matières</a>
-                    <?php if (isset($_SESSION['user_id'])): ?>
-                        <span class="text-gray-600">Bonjour, <?= htmlspecialchars($_SESSION['username']) ?>!</span>
-                        <a href="user-dashboard.php" class="text-gray-600 hover:text-gray-900">Tableau de Bord</a>
-                        <a href="logout.php" class="text-red-600 hover:text-red-700">Déconnexion</a>
-                    <?php else: ?>
-                        <a href="login.php" class="text-gray-600 hover:text-gray-900">Se Connecter</a>
-                        <a href="register.php" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Créer un Compte</a>
-                    <?php endif; ?>
-                </nav>
-            </div>
-        </div>
-    </header>
+    <?php include 'components/header.php'; ?>
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
