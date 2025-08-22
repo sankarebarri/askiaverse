@@ -5,12 +5,17 @@ session_start();
 
 // Simple subjects page with direct database connection
 try {
-    // Direct database connection
-    $host = '127.0.0.1';
-    $port = 3306;
-    $dbname = 'askiaverse';
-    $username = 'root';
-    $password = '';
+    // Load environment variables
+    require_once __DIR__ . '/../vendor/autoload.php';
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+    $dotenv->load();
+    
+    // Database connection using environment variables
+    $host = $_ENV['DB_HOST'] ?? 'localhost';
+    $port = $_ENV['DB_PORT'] ?? 3306;
+    $dbname = $_ENV['DB_DATABASE'] ?? 'u379844049_askiagames_db';
+    $username = $_ENV['DB_USERNAME'] ?? 'u379844049_askiagames';
+    $password = $_ENV['DB_PASSWORD'] ?? '';
     
     $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4";
     

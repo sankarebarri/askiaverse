@@ -10,12 +10,17 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-// Database connection
-$host = '127.0.0.1';
-$port = 3306;
-$dbname = 'askiaverse';
-$username_db = 'root';
-$password_db = '';
+// Load environment variables
+require_once __DIR__ . '/../vendor/autoload.php';
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv->load();
+
+// Database connection using environment variables
+$host = $_ENV['DB_HOST'] ?? 'localhost';
+$port = $_ENV['DB_PORT'] ?? 3306;
+$dbname = $_ENV['DB_DATABASE'] ?? 'u379844049_askiagames_db';
+$username_db = $_ENV['DB_USERNAME'] ?? 'u379844049_askiagames';
+$password_db = $_ENV['DB_PASSWORD'] ?? '';
 
 try {
     $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4";

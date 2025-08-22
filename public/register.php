@@ -30,22 +30,27 @@ if ($_POST) {
         $error = 'Le mot de passe doit contenir au moins 6 caractères.';
     } else {
         try {
-            // Database connection
-            $host = '127.0.0.1';
-            $port = 3306;
-            $dbname = 'askiaverse';
-            $username_db = 'root';
-            $password_db = '';
-            
-            $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4";
-            
-            $options = [
-                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_EMULATE_PREPARES   => false,
-            ];
+                    // Load environment variables
+        require_once __DIR__ . '/../vendor/autoload.php';
+        $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+        $dotenv->load();
+        
+        // Database connection using environment variables
+        $host = $_ENV['DB_HOST'] ?? 'localhost';
+        $port = $_ENV['DB_PORT'] ?? 3306;
+        $dbname = $_ENV['DB_DATABASE'] ?? 'u379844049_askiagames_db';
+        $username_db = $_ENV['DB_USERNAME'] ?? 'u379844049_askiagames';
+        $password_db = $_ENV['DB_PASSWORD'] ?? '';
+        
+        $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4";
+        
+        $options = [
+            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES   => false,
+        ];
 
-            $pdo = new PDO($dsn, $username_db, $password_db, $options);
+        $pdo = new PDO($dsn, $username_db, $password_db, $options);
             
             // Check if username already exists
             $sql = "SELECT id FROM users WHERE username = ?";

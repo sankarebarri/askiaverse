@@ -18,10 +18,10 @@ if (!function_exists('env')) {
 
 // Retourner la configuration de la base de données
 return [
-    'host'     => env('DB_HOST', '127.0.0.1'),
+    'host'     => env('DB_HOST', 'localhost'),
     'port'     => env('DB_PORT', 3306),
-    'dbname'   => env('DB_DATABASE', 'askiaverse_db'),
-    'username' => env('DB_USERNAME', 'root'),
+    'dbname'   => env('DB_DATABASE', 'u379844049_askiagames_db'),
+    'username' => env('DB_USERNAME', 'u379844049_askiagames'),
     'password' => env('DB_PASSWORD', ''),
     'charset'  => 'utf8mb4',
 ]; 
