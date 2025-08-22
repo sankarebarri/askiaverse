@@ -1,9 +1,31 @@
 <?php
-// Simple admin dashboard to view database content
-require_once __DIR__ . '/../src/bootstrap.php';
+// Set session directory to a writable location
+ini_set('session.save_path', '/tmp');
+session_start();
 
+// Simple admin dashboard to view database content
 try {
-    $pdo = getDatabaseConnection();
+    // Load environment variables
+    require_once __DIR__ . '/../vendor/autoload.php';
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+    $dotenv->load();
+    
+    // Database connection using environment variables
+    $host = $_ENV['DB_HOST'] ?? 'localhost';
+    $port = $_ENV['DB_PORT'] ?? 3306;
+    $dbname = $_ENV['DB_DATABASE'] ?? 'u379844049_askiagames_db';
+    $username_db = $_ENV['DB_USERNAME'] ?? 'u379844049_askiagames';
+    $password_db = $_ENV['DB_PASSWORD'] ?? '';
+    
+    $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4";
+    
+    $options = [
+        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES   => false,
+    ];
+
+    $pdo = new PDO($dsn, $username_db, $password_db, $options);
     
     // Fetch statistics
     $stats = [];
@@ -64,9 +86,9 @@ try {
                     <h1 class="text-2xl font-bold text-gray-900">Askiaverse Admin</h1>
                 </div>
                 <nav class="flex space-x-4">
-                    <a href="/" class="text-gray-600 hover:text-gray-900">Accueil</a>
-                    <a href="/subjects.php" class="text-gray-600 hover:text-gray-900">Matières</a>
-                    <a href="/admin-dashboard.php" class="text-blue-600 font-medium">Dashboard</a>
+                    <a href="index.php" class="text-gray-600 hover:text-gray-900">Accueil</a>
+                    <a href="simple-subjects.php" class="text-gray-600 hover:text-gray-900">Matières</a>
+                    <a href="simple-admin.php" class="text-blue-600 font-medium">Dashboard</a>
                 </nav>
             </div>
         </div>

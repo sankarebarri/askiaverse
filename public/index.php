@@ -1,30 +1,114 @@
 <?php
-// public/index.php - Front Controller
+// Set session directory to a writable location
+ini_set('session.save_path', '/tmp');
+session_start();
+?>
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Askiaverse - L'aventure du savoir commence ici</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white/10 backdrop-blur-sm border-b border-white/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <?php if (isset($_SESSION['user_id'])): ?>
+                        <a href="user-dashboard.php" class="text-2xl font-bold text-white hover:text-blue-200 transition-colors duration-200">Askiaverse</a>
+                    <?php else: ?>
+                        <a href="index.php" class="text-2xl font-bold text-white hover:text-blue-200 transition-colors duration-200">Askiaverse</a>
+                    <?php endif; ?>
+                </div>
+                <nav class="flex space-x-4">
+                    <?php if (isset($_SESSION['user_id'])): ?>
+                        <a href="simple-subjects.php" class="text-white hover:text-blue-200">Matières</a>
+                        <a href="user-dashboard.php" class="text-white hover:text-blue-200">Tableau de Bord</a>
+                        <a href="logout.php" class="text-red-300 hover:text-red-100">Déconnexion</a>
+                    <?php else: ?>
+                        <a href="simple-subjects.php" class="text-white hover:text-blue-200">Matières</a>
+                        <a href="login.php" class="text-white hover:text-blue-200">Se Connecter</a>
+                        <a href="register.php" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Créer un Compte</a>
+                    <?php endif; ?>
+                </nav>
+            </div>
+        </div>
+    </header>
 
-// Notre point d'entrée principal. Il initialise l'application et
-// utilise le routeur pour gérer la requête.
-// ===================================================================
+    <!-- Hero Section -->
+    <main class="flex-1">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div class="text-center">
+                <!-- Main Logo -->
+                <div class="mx-auto h-32 w-32 bg-white rounded-full flex items-center justify-center mb-8">
+                    <span class="text-6xl">🚀</span>
+                </div>
+                
+                <!-- Main Title -->
+                <h1 class="text-5xl md:text-6xl font-bold text-white mb-6">
+                    Askiaverse
+                </h1>
+                
+                <!-- Tagline -->
+                <p class="text-xl md:text-2xl text-blue-200 mb-8 max-w-3xl mx-auto">
+                    L'aventure du savoir commence ici. Plongez dans un univers de jeux éducatifs conçus pour les jeunes esprits brillants du Mali.
+                </p>
+                
+                <!-- Call to Action -->
+                <div class="space-y-4">
+                    <?php if (isset($_SESSION['user_id'])): ?>
+                        <a href="simple-subjects.php" class="inline-block bg-blue-600 text-white px-8 py-4 rounded-lg text-xl font-bold hover:bg-blue-700 transition-colors duration-200">
+                            🎯 Continuer l'Apprentissage
+                        </a>
+                        <br>
+                        <a href="user-dashboard.php" class="inline-block bg-green-600 text-white px-6 py-3 rounded-lg text-lg font-medium hover:bg-green-700 transition-colors duration-200">
+                            📊 Mon Tableau de Bord
+                        </a>
+                    <?php else: ?>
+                        <a href="simple-subjects.php" class="inline-block bg-blue-600 text-white px-8 py-4 rounded-lg text-xl font-bold hover:bg-blue-700 transition-colors duration-200">
+                            🚀 Essayer un Défi Gratuit!
+                        </a>
+                        <br>
+                        <a href="register.php" class="inline-block bg-green-600 text-white px-6 py-3 rounded-lg text-lg font-medium hover:bg-green-700 transition-colors duration-200">
+                            ✨ Créer un Compte
+                        </a>
+                    <?php endif; ?>
+                </div>
+            </div>
+            
+            <!-- Features Grid -->
+            <div class="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="text-4xl mb-4">📚</div>
+                    <h3 class="text-xl font-bold text-white mb-2">Matières Variées</h3>
+                    <p class="text-blue-200">Mathématiques, Français, Sciences, Histoire, Géographie et plus encore</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl mb-4">🎮</div>
+                    <h3 class="text-xl font-bold text-white mb-2">Quiz Interactifs</h3>
+                    <p class="text-blue-200">Apprenez en vous amusant avec nos quiz dynamiques et chronométrés</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl mb-4">🏆</div>
+                    <h3 class="text-xl font-bold text-white mb-2">Système de Récompenses</h3>
+                    <p class="text-blue-200">Gagnez de l'XP et des Orbs en progressant dans vos études</p>
+                </div>
+            </div>
+        </div>
+    </main>
 
-// Debug: Log the request
-error_log("Request URI: " . $_SERVER['REQUEST_URI']);
-
-// On inclut notre fichier de démarrage qui prépare tout.
-// Notez que le chemin a changé pour correspondre à votre nouvelle structure.
-require_once __DIR__ . '/../src/bootstrap.php';
-
-// Debug: Check session after bootstrap
-error_log("Session after bootstrap: " . print_r($_SESSION, true));
-
-// On inclut et récupère notre routeur configuré.
-$router = require_once __DIR__ . '/../config/routes.php';
-
-// On récupère l'URI de la requête (ex: /login) et la méthode (GET, POST).
-$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$requestMethod = $_SERVER['REQUEST_METHOD'];
-
-error_log("Dispatching to URI: $uri, Method: $requestMethod");
-
-// Le routeur se charge de trouver la bonne action à exécuter.
-// On lui passe la connexion PDO qui a été créée dans bootstrap.php.
-$router->dispatch($uri, $requestMethod, $pdo);
+    <!-- Footer -->
+    <footer class="bg-white/10 backdrop-blur-sm border-t border-white/20 mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="text-center text-blue-200">
+                <p>&copy; 2025 Askiaverse. Tous droits réservés.</p>
+                <p class="mt-2">Éducation interactive pour les jeunes esprits brillants du Mali</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
 
