@@ -5,7 +5,7 @@ session_start();
 
 // If user is already logged in, redirect to subjects
 if (isset($_SESSION['user_id'])) {
-    header('Location: http://localhost:8000/simple-subjects.php');
+    header('Location: simple-subjects.php');
     exit;
 }
 
@@ -21,12 +21,17 @@ if ($_POST) {
         $error = 'Veuillez remplir tous les champs.';
     } else {
         try {
-            // Database connection
-            $host = '127.0.0.1';
-            $port = 3306;
-            $dbname = 'askiaverse';
-            $username_db = 'root';
-            $password_db = '';
+            // Load environment variables
+            require_once __DIR__ . '/../vendor/autoload.php';
+            $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+            $dotenv->load();
+            
+            // Database connection using environment variables
+            $host = $_ENV['DB_HOST'] ?? 'localhost';
+            $port = $_ENV['DB_PORT'] ?? 3306;
+            $dbname = $_ENV['DB_DATABASE'] ?? 'u379844049_askiagames_db';
+            $username_db = $_ENV['DB_USERNAME'] ?? 'u379844049_askiagames';
+            $password_db = $_ENV['DB_PASSWORD'] ?? '';
             
             $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4";
             
@@ -56,7 +61,7 @@ if ($_POST) {
                 $success = 'Connexion réussie! Redirection...';
                 
                 // Redirect after 2 seconds
-                header('Refresh: 2; URL=http://localhost:8000/user-dashboard.php');
+                header('Refresh: 2; URL=user-dashboard.php');
             } else {
                 $error = 'Nom d\'utilisateur ou mot de passe incorrect.';
             }
@@ -155,7 +160,7 @@ if ($_POST) {
                 <div class="mt-6 text-center">
                     <p class="text-sm text-gray-600">
                         Pas encore de compte? 
-                        <a href="http://localhost:8000/register.php" class="font-medium text-blue-600 hover:text-blue-500">
+                        <a href="register.php" class="font-medium text-blue-600 hover:text-blue-500">
                             Inscrivez-vous
                         </a>
                     </p>
@@ -163,7 +168,7 @@ if ($_POST) {
 
                 <!-- Back to Home -->
                 <div class="mt-4 text-center">
-                    <a href="http://localhost:8000/" class="text-sm text-gray-500 hover:text-gray-700">
+                    <a href="index.php" class="text-sm text-gray-500 hover:text-gray-700">
                         ← Retour à l'accueil
                     </a>
                 </div>
