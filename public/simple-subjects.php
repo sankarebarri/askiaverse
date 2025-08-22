@@ -60,21 +60,21 @@ try {
             <div class="flex justify-between items-center py-4">
                 <div class="flex items-center">
                     <?php if (isset($_SESSION['user_id'])): ?>
-                        <a href="http://localhost:8000/user-dashboard.php" class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors duration-200">Askiaverse</a>
+                        <a href="user-dashboard.php" class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors duration-200">Askiaverse</a>
                     <?php else: ?>
-                        <a href="http://localhost:8000/" class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors duration-200">Askiaverse</a>
+                        <a href="index.php" class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors duration-200">Askiaverse</a>
                     <?php endif; ?>
                 </div>
                 <nav class="flex space-x-4">
-                    <a href="http://localhost:8000/" class="text-gray-600 hover:text-gray-900">Accueil</a>
-                    <a href="http://localhost:8000/simple-subjects.php" class="text-blue-600 font-medium">Matières</a>
+                    <a href="index.php" class="text-gray-600 hover:text-gray-900">Accueil</a>
+                    <a href="simple-subjects.php" class="text-blue-600 font-medium">Matières</a>
                     <?php if (isset($_SESSION['user_id'])): ?>
                         <span class="text-gray-600">Bonjour, <?= htmlspecialchars($_SESSION['username']) ?>!</span>
-                        <a href="http://localhost:8000/user-dashboard.php" class="text-gray-600 hover:text-gray-900">Tableau de Bord</a>
-                        <a href="http://localhost:8000/logout.php" class="text-red-600 hover:text-red-700">Déconnexion</a>
+                        <a href="user-dashboard.php" class="text-gray-600 hover:text-gray-900">Tableau de Bord</a>
+                        <a href="logout.php" class="text-red-600 hover:text-red-700">Déconnexion</a>
                     <?php else: ?>
-                        <a href="http://localhost:8000/login.php" class="text-gray-600 hover:text-gray-900">Se Connecter</a>
-                        <a href="http://localhost:8000/register.php" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Créer un Compte</a>
+                        <a href="login.php" class="text-gray-600 hover:text-gray-900">Se Connecter</a>
+                        <a href="register.php" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Créer un Compte</a>
                     <?php endif; ?>
                 </nav>
             </div>
@@ -118,7 +118,7 @@ try {
                 
                 <!-- Subject Actions -->
                 <div class="p-6 bg-gray-50">
-                    <a href="http://localhost:8000/simple-subject.php?id=<?= $subject['id'] ?>" 
+                    <a href="simple-subject.php?id=<?= $subject['id'] ?>" 
                        class="w-full bg-white border-2 border-gray-200 text-gray-700 px-4 py-3 rounded-lg hover:border-gray-300 hover:bg-gray-50 transition-colors duration-200 text-center block font-medium">
                         Explorer les thèmes
                     </a>
@@ -139,7 +139,7 @@ try {
                 <p class="text-xl mb-6 opacity-90">
                     Rejoignez des milliers d'élèves qui apprennent en s'amusant sur Askiaverse
                 </p>
-                <a href="http://localhost:8000/" class="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-bold hover:bg-gray-100 transition-colors duration-200 inline-block">
+                <a href="index.php" class="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-bold hover:bg-gray-100 transition-colors duration-200 inline-block">
                     🚀 Commencer maintenant
                 </a>
             </div>

@@ -60,7 +60,7 @@ try {
     echo "</table>";
     
     echo "<p style='color: green;'>✅ Database update completed successfully!</p>";
-    echo "<p><a href='http://localhost:8000/'>Return to Askiaverse</a></p>";
+            echo "<p><a href='index.php'>Return to Askiaverse</a></p>";
     
 } catch (Exception $e) {
     echo "<p style='color: red;'>❌ Error updating database: " . $e->getMessage() . "</p>";

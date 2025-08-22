@@ -5,7 +5,7 @@ session_start();
 
 // If user is already logged in, redirect to subjects
 if (isset($_SESSION['user_id'])) {
-    header('Location: http://localhost:8000/simple-subjects.php');
+    header('Location: simple-subjects.php');
     exit;
 }
 
@@ -243,7 +243,7 @@ if ($_POST) {
                 <div class="mt-6 text-center">
                     <p class="text-sm text-gray-600">
                         Déjà un compte? 
-                        <a href="http://localhost:8000/login.php" class="font-medium text-blue-600 hover:text-blue-500">
+                        <a href="login.php" class="font-medium text-blue-600 hover:text-blue-500">
                             Connectez-vous
                         </a>
                     </p>
@@ -251,7 +251,7 @@ if ($_POST) {
 
                 <!-- Back to Home -->
                 <div class="mt-4 text-center">
-                    <a href="http://localhost:8000/" class="text-sm text-gray-500 hover:text-gray-700">
+                    <a href="index.php" class="text-sm text-gray-500 hover:text-gray-700">
                         ← Retour à l'accueil
                     </a>
                 </div>

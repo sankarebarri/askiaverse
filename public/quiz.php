@@ -5,23 +5,28 @@ session_start();
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header('Location: http://localhost:8000/login.php');
+    header('Location: login.php');
     exit;
 }
 
 // Get theme ID from URL
 $themeId = $_GET['theme_id'] ?? null;
 if (!$themeId) {
-    header('Location: http://localhost:8000/simple-subjects.php');
+    header('Location: simple-subjects.php');
     exit;
 }
 
-// Database connection
-$host = '127.0.0.1';
-$port = 3306;
-$dbname = 'askiaverse';
-$username_db = 'root';
-$password_db = '';
+// Load environment variables
+require_once __DIR__ . '/../vendor/autoload.php';
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv->load();
+
+// Database connection using environment variables
+$host = $_ENV['DB_HOST'] ?? 'localhost';
+$port = $_ENV['DB_PORT'] ?? 3306;
+$dbname = $_ENV['DB_DATABASE'] ?? 'u379844049_askiagames_db';
+$username_db = $_ENV['DB_USERNAME'] ?? 'u379844049_askiagames';
+$password_db = $_ENV['DB_PASSWORD'] ?? '';
 
 try {
     $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4";
@@ -42,7 +47,7 @@ try {
     $theme = $stmt->fetch();
     
     if (!$theme) {
-        header('Location: http://localhost:8000/simple-subjects.php');
+        header('Location: simple-subjects.php');
         exit;
     }
     
@@ -75,16 +80,16 @@ try {
             <div class="flex justify-between items-center py-4">
                 <div class="flex items-center">
                     <?php if (isset($_SESSION['user_id'])): ?>
-                        <a href="http://localhost:8000/user-dashboard.php" class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors duration-200">Askiaverse</a>
+                        <a href="user-dashboard.php" class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors duration-200">Askiaverse</a>
                     <?php else: ?>
-                        <a href="http://localhost:8000/" class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors duration-200">Askiaverse</a>
+                        <a href="index.php" class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors duration-200">Askiaverse</a>
                     <?php endif; ?>
                 </div>
                 <nav class="flex space-x-4">
-                    <a href="http://localhost:8000/simple-subjects.php" class="text-gray-600 hover:text-gray-900">Matières</a>
-                    <a href="http://localhost:8000/user-dashboard.php" class="text-gray-600 hover:text-gray-900">Tableau de Bord</a>
+                    <a href="simple-subjects.php" class="text-gray-600 hover:text-gray-900">Matières</a>
+                    <a href="user-dashboard.php" class="text-gray-600 hover:text-gray-900">Tableau de Bord</a>
                     <span class="text-gray-600">Bonjour, <?= htmlspecialchars($_SESSION['username']) ?>!</span>
-                    <a href="http://localhost:8000/logout.php" class="text-red-600 hover:text-red-700">Déconnexion</a>
+                    <a href="logout.php" class="text-red-600 hover:text-red-700">Déconnexion</a>
                 </nav>
             </div>
         </div>
@@ -435,7 +440,7 @@ try {
             finishBtn.disabled = true;
             
             // Send quiz results
-            fetch('http://localhost:8000/quiz-results.php', {
+            fetch('quiz-results.php', {
                 method: 'POST',
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
@@ -494,11 +499,11 @@ try {
                         </div>
                         
                         <div class="flex space-x-4">
-                            <button onclick="window.location.href='http://localhost:8000/quiz-results.php?attempt_id=${data.attempt_id}'" 
+                            <button onclick="window.location.href='quiz-results.php?attempt_id=${data.attempt_id}'" 
                                     class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200">
                                 Voir les Détails
                             </button>
-                            <button onclick="window.location.href='http://localhost:8000/user-dashboard.php'" 
+                            <button onclick="window.location.href='user-dashboard.php'" 
                                     class="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200">
                                 Tableau de Bord
                             </button>

@@ -5,7 +5,7 @@ session_start();
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header('Location: http://localhost:8000/login.php');
+    header('Location: login.php');
     exit;
 }
 
@@ -116,13 +116,13 @@ try {
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center py-4">
                 <div class="flex items-center">
-                    <a href="http://localhost:8000/user-dashboard.php" class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors duration-200">Askiaverse</a>
+                    <a href="user-dashboard.php" class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors duration-200">Askiaverse</a>
                 </div>
                 <nav class="flex space-x-4">
-                    <a href="http://localhost:8000/simple-subjects.php" class="text-gray-600 hover:text-gray-900">Matières</a>
-                    <a href="http://localhost:8000/user-dashboard.php" class="text-blue-600 font-medium">Tableau de Bord</a>
+                    <a href="simple-subjects.php" class="text-gray-600 hover:text-gray-900">Matières</a>
+                    <a href="user-dashboard.php" class="text-blue-600 font-medium">Tableau de Bord</a>
                     <span class="text-gray-600">Bonjour, <?= htmlspecialchars($_SESSION['username']) ?>!</span>
-                    <a href="http://localhost:8000/logout.php" class="text-red-600 hover:text-red-700">Déconnexion</a>
+                    <a href="logout.php" class="text-red-600 hover:text-red-700">Déconnexion</a>
                 </nav>
             </div>
         </div>
@@ -270,25 +270,25 @@ try {
 
                     <!-- Quick Actions -->
             <div class="mt-8 grid grid-cols-1 md:grid-cols-4 gap-6">
-                <a href="http://localhost:8000/simple-subjects.php" class="bg-blue-600 text-white p-6 rounded-xl shadow-lg hover:bg-blue-700 transition-colors duration-200 text-center">
+                <a href="simple-subjects.php" class="bg-blue-600 text-white p-6 rounded-xl shadow-lg hover:bg-blue-700 transition-colors duration-200 text-center">
                     <div class="text-3xl mb-2">📚</div>
                     <h3 class="text-xl font-bold mb-2">Explorer les Matières</h3>
                     <p class="text-blue-100">Découvrir de nouveaux thèmes</p>
                 </a>
                 
-                <a href="http://localhost:8000/simple-subject.php?id=1" class="bg-green-600 text-white p-6 rounded-xl shadow-lg hover:bg-green-700 transition-colors duration-200 text-center">
+                <a href="simple-subject.php?id=1" class="bg-green-600 text-white p-6 rounded-xl shadow-lg hover:bg-green-700 transition-colors duration-200 text-center">
                     <div class="text-3xl mb-2">🔢</div>
                     <h3 class="text-xl font-bold mb-2">Mathématiques</h3>
                     <p class="text-green-100">Commencer un quiz</p>
                 </a>
                 
-                <a href="http://localhost:8000/simple-admin.php" class="bg-purple-600 text-white p-6 rounded-xl shadow-lg hover:bg-purple-700 transition-colors duration-200 text-center">
+                <a href="simple-admin.php" class="bg-purple-600 text-white p-6 rounded-xl shadow-lg hover:bg-purple-700 transition-colors duration-200 text-center">
                     <div class="text-3xl mb-2">📊</div>
                     <h3 class="text-xl font-bold mb-2">Statistiques</h3>
                     <p class="text-purple-100">Voir les statistiques globales</p>
                 </a>
                 
-                <a href="http://localhost:8000/debug-xp.php" class="bg-orange-600 text-white p-6 rounded-xl shadow-lg hover:bg-orange-700 transition-colors duration-200 text-center">
+                <a href="debug-xp.php" class="bg-orange-600 text-white p-6 rounded-xl shadow-lg hover:bg-orange-700 transition-colors duration-200 text-center">
                     <div class="text-3xl mb-2">🔍</div>
                     <h3 class="text-xl font-bold mb-2">Debug XP</h3>
                     <p class="text-orange-100">Voir les données XP détaillées</p>

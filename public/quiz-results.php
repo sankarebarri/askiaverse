@@ -5,7 +5,7 @@ session_start();
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header('Location: http://localhost:8000/login.php');
+    header('Location: login.php');
     exit;
 }
 
@@ -238,16 +238,16 @@ if ($attemptId) {
             <div class="flex justify-between items-center py-4">
                 <div class="flex items-center">
                     <?php if (isset($_SESSION['user_id'])): ?>
-                        <a href="http://localhost:8000/user-dashboard.php" class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors duration-200">Askiaverse</a>
+                        <a href="user-dashboard.php" class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors duration-200">Askiaverse</a>
                     <?php else: ?>
-                        <a href="http://localhost:8000/" class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors duration-200">Askiaverse</a>
+                        <a href="index.php" class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors duration-200">Askiaverse</a>
                     <?php endif; ?>
                 </div>
                 <nav class="flex space-x-4">
-                    <a href="http://localhost:8000/simple-subjects.php" class="text-gray-600 hover:text-gray-900">Matières</a>
-                    <a href="http://localhost:8000/user-dashboard.php" class="text-gray-600 hover:text-gray-900">Tableau de Bord</a>
+                    <a href="simple-subjects.php" class="text-gray-600 hover:text-gray-900">Matières</a>
+                    <a href="user-dashboard.php" class="text-gray-600 hover:text-gray-900">Tableau de Bord</a>
                     <span class="text-gray-600">Bonjour, <?= htmlspecialchars($_SESSION['username']) ?>!</span>
-                    <a href="http://localhost:8000/logout.php" class="text-red-600 hover:text-red-700">Déconnexion</a>
+                    <a href="logout.php" class="text-red-600 hover:text-red-700">Déconnexion</a>
                 </nav>
             </div>
         </div>
@@ -352,19 +352,19 @@ if ($attemptId) {
 
         <!-- Action Buttons -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <a href="http://localhost:8000/simple-subjects.php" class="bg-blue-600 text-white p-6 rounded-xl shadow-lg hover:bg-blue-700 transition-colors duration-200 text-center">
+            <a href="simple-subjects.php" class="bg-blue-600 text-white p-6 rounded-xl shadow-lg hover:bg-blue-700 transition-colors duration-200 text-center">
                 <div class="text-3xl mb-2">📚</div>
                 <h3 class="text-xl font-bold mb-2">Explorer d'autres Matières</h3>
                 <p class="text-blue-100">Découvrir de nouveaux thèmes</p>
             </a>
             
-            <a href="http://localhost:8000/user-dashboard.php" class="bg-green-600 text-white p-6 rounded-xl shadow-lg hover:bg-green-700 transition-colors duration-200 text-center">
+            <a href="user-dashboard.php" class="bg-green-600 text-white p-6 rounded-xl shadow-lg hover:bg-green-700 transition-colors duration-200 text-center">
                 <div class="text-3xl mb-2">🏠</div>
                 <h3 class="text-xl font-bold mb-2">Mon Tableau de Bord</h3>
                 <p class="text-green-100">Voir mes progrès et XP</p>
             </a>
             
-            <a href="http://localhost:8000/quiz.php?theme_id=<?= $quizResults['theme_id'] ?>" class="bg-purple-600 text-white p-6 rounded-xl shadow-lg hover:bg-purple-700 transition-colors duration-200 text-center">
+            <a href="quiz.php?theme_id=<?= $quizResults['theme_id'] ?>" class="bg-purple-600 text-white p-6 rounded-xl shadow-lg hover:bg-purple-700 transition-colors duration-200 text-center">
                 <div class="text-3xl mb-2">🔄</div>
                 <h3 class="text-xl font-bold mb-2">Recommencer ce Quiz</h3>
                 <p class="text-purple-100">Améliorer mon score</p>
@@ -378,7 +378,7 @@ if ($attemptId) {
             <div class="text-6xl mb-4">🎯</div>
             <h1 class="text-2xl font-bold text-gray-900 mb-4">Aucun résultat à afficher</h1>
             <p class="text-gray-600 mb-6">Commencez un quiz pour voir vos résultats ici !</p>
-            <a href="http://localhost:8000/simple-subjects.php" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200">
+            <a href="simple-subjects.php" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200">
                 Commencer un Quiz
             </a>
         </div>

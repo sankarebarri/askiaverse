@@ -75,15 +75,15 @@ try {
             <div class="flex justify-between items-center py-4">
                 <div class="flex items-center">
                     <?php if (isset($_SESSION['user_id'])): ?>
-                        <a href="http://localhost:8000/user-dashboard.php" class="text-2xl font-bold text-gray-900 hover:text-blue-600">Askiaverse</a>
+                        <a href="user-dashboard.php" class="text-2xl font-bold text-gray-900 hover:text-blue-600">Askiaverse</a>
                     <?php else: ?>
-                        <a href="http://localhost:8000/" class="text-2xl font-bold text-gray-900 hover:text-blue-600">Askiaverse</a>
+                        <a href="index.php" class="text-2xl font-bold text-gray-900 hover:text-blue-600">Askiaverse</a>
                     <?php endif; ?>
                 </div>
                 <nav class="flex space-x-4">
-                    <a href="http://localhost:8000/simple-subjects.php" class="text-blue-600 font-medium">← Retour aux matières</a>
+                    <a href="simple-subjects.php" class="text-blue-600 font-medium">← Retour aux matières</a>
                     <?php if (isset($_SESSION['user_id'])): ?>
-                        <a href="http://localhost:8000/user-dashboard.php" class="text-gray-600 hover:text-gray-900">Tableau de Bord</a>
+                        <a href="user-dashboard.php" class="text-gray-600 hover:text-gray-900">Tableau de Bord</a>
                     <?php endif; ?>
                 </nav>
             </div>
@@ -123,7 +123,7 @@ try {
                         </span>
                     </div>
                     <p class="text-gray-600 mb-4"><?= htmlspecialchars($theme['description']) ?></p>
-                    <a href="http://localhost:8000/quiz.php?theme_id=<?= $theme['id'] ?>" class="w-full bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium text-center block">
+                    <a href="quiz.php?theme_id=<?= $theme['id'] ?>" class="w-full bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium text-center block">
                         🎮 Jouer
                     </a>
                 </div>
@@ -185,7 +185,7 @@ try {
                 <p class="text-xl mb-6 opacity-90">
                     Commencez par un thème facile et progressez à votre rythme
                 </p>
-                <a href="http://localhost:8000/" class="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-bold hover:bg-gray-100 transition-colors duration-200 inline-block">
+                <a href="index.php" class="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-bold hover:bg-gray-100 transition-colors duration-200 inline-block">
                     🚀 Commencer l'apprentissage
                 </a>
             </div>

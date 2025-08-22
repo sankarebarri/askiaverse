@@ -79,15 +79,15 @@ try {
             <div class="flex justify-between items-center py-4">
                 <div class="flex items-center">
                     <?php if (isset($_SESSION['user_id'])): ?>
-                        <a href="http://localhost:8000/user-dashboard.php" class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors duration-200">Askiaverse Admin</a>
+                        <a href="user-dashboard.php" class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors duration-200">Askiaverse Admin</a>
                     <?php else: ?>
-                        <a href="http://localhost:8000/" class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors duration-200">Askiaverse Admin</a>
+                        <a href="index.php" class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors duration-200">Askiaverse Admin</a>
                     <?php endif; ?>
                 </div>
                 <nav class="flex space-x-4">
-                    <a href="http://localhost:8000/simple-subjects.php" class="text-gray-600 hover:text-gray-900">Matières</a>
-                    <a href="http://localhost:8000/user-dashboard.php" class="text-gray-600 hover:text-gray-900">Tableau de Bord</a>
-                    <a href="http://localhost:8000/simple-admin.php" class="text-blue-600 font-medium">Admin</a>
+                    <a href="simple-subjects.php" class="text-gray-600 hover:text-gray-900">Matières</a>
+                    <a href="user-dashboard.php" class="text-gray-600 hover:text-gray-900">Tableau de Bord</a>
+                    <a href="simple-admin.php" class="text-blue-600 font-medium">Admin</a>
                 </nav>
             </div>
         </div>
@@ -166,19 +166,19 @@ try {
 
         <!-- Quick Actions -->
         <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <a href="http://localhost:8000/simple-subjects.php" class="bg-blue-600 text-white p-6 rounded-xl shadow-lg hover:bg-blue-700 transition-colors duration-200 text-center">
+            <a href="simple-subjects.php" class="bg-blue-600 text-white p-6 rounded-xl shadow-lg hover:bg-blue-700 transition-colors duration-200 text-center">
                 <div class="text-3xl mb-2">📚</div>
                 <h3 class="text-xl font-bold mb-2">Voir les Matières</h3>
                 <p class="text-blue-100">Explorer le contenu éducatif</p>
             </a>
             
-            <a href="http://localhost:8000/simple-subject.php?id=1" class="bg-green-600 text-white p-6 rounded-xl shadow-lg hover:bg-green-700 transition-colors duration-200 text-center">
+            <a href="simple-subject.php?id=1" class="bg-green-600 text-white p-6 rounded-xl shadow-lg hover:bg-green-700 transition-colors duration-200 text-center">
                 <div class="text-3xl mb-2">🔢</div>
                 <h3 class="text-xl font-bold mb-2">Mathématiques</h3>
                 <p class="text-green-100">Voir les thèmes et questions</p>
             </a>
             
-            <a href="http://localhost:8000/" class="bg-purple-600 text-white p-6 rounded-xl shadow-lg hover:bg-purple-700 transition-colors duration-200 text-center">
+            <a href="index.php" class="bg-purple-600 text-white p-6 rounded-xl shadow-lg hover:bg-purple-700 transition-colors duration-200 text-center">
                 <div class="text-3xl mb-2">🏠</div>
                 <h3 class="text-xl font-bold mb-2">Accueil</h3>
                 <p class="text-purple-100">Retour à la page principale</p>

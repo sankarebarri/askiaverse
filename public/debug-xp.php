@@ -6,7 +6,7 @@ session_start();
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header('Location: http://localhost:8000/login.php');
+    header('Location: login.php');
     exit;
 }
 
@@ -149,10 +149,10 @@ try {
         
         <!-- Actions -->
         <div class="mt-8 flex space-x-4">
-            <a href="http://localhost:8000/user-dashboard.php" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200">
+            <a href="user-dashboard.php" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200">
                 ← Back to Dashboard
             </a>
-            <a href="http://localhost:8000/simple-subjects.php" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-200">
+            <a href="simple-subjects.php" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-200">
                 Take Another Quiz
             </a>
         </div>

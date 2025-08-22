@@ -7,6 +7,6 @@ session_start();
 session_destroy();
 
 // Redirect to login page
-    header('Location: http://localhost:8000/login.php');
+    header('Location: login.php');
 exit;
 ?>
